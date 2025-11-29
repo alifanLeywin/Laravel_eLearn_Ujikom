@@ -11,33 +11,67 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { type NavItem, type SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { Folder, LayoutGrid, Shield, Tag, BookOpen } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
-
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+
+    const mainNavItems: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+    ];
+
+    if (auth.user?.role === 'super_admin') {
+        mainNavItems.push(
+            {
+                title: 'Tenants',
+                href: '/admin/tenants',
+                icon: Shield,
+            },
+            {
+                title: 'Categories',
+                href: '/admin/categories',
+                icon: Tag,
+            },
+            {
+                title: 'Courses',
+                href: '/admin/courses',
+                icon: BookOpen,
+            },
+        );
+    }
+
+    if (auth.user?.role === 'admin') {
+        mainNavItems.push(
+            {
+                title: 'Categories',
+                href: '/admin/categories',
+                icon: Tag,
+            },
+            {
+                title: 'Courses',
+                href: '/admin/courses',
+                icon: BookOpen,
+            },
+        );
+    }
+
+    if (auth.user?.role === 'teacher') {
+        mainNavItems.push({
+            title: 'Courses',
+            href: '/teacher/courses',
+            icon: BookOpen,
+        });
+    }
+
+    const footerNavItems: NavItem[] = [];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

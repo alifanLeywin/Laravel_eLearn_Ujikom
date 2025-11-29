@@ -4,6 +4,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
@@ -46,6 +47,13 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <div className="flex items-center justify-between px-3 pb-2 pt-1">
+                <span className="text-xs font-semibold text-muted-foreground">
+                    Theme
+                </span>
+                <AppearanceToggleDropdown />
+            </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
                 <Link
