@@ -10,6 +10,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit } from '@/routes/profile';
@@ -51,7 +52,7 @@ export default function Profile({
                         {({ processing, recentlySuccessful, errors }) => (
                             <>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">Name</Label>
 
                                     <Input
                                         id="name"
@@ -70,7 +71,7 @@ export default function Profile({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">Email address</Label>
 
                                     <Input
                                         id="email"
@@ -85,7 +86,25 @@ export default function Profile({
 
                                     <InputError
                                         className="mt-2"
-                                        message={errors.email}
+                                message={errors.email}
+                            />
+                        </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="bio">Bio</Label>
+
+                                    <Textarea
+                                        id="bio"
+                                        name="bio"
+                                        className="mt-1 block w-full"
+                                        defaultValue={auth.user.bio ?? ''}
+                                        placeholder="Ceritakan pengalaman mengajar, keahlian, dsb."
+                                        rows={3}
+                                    />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.bio}
                                     />
                                 </div>
 
@@ -146,3 +165,20 @@ export default function Profile({
         </AppLayout>
     );
 }
+                                <div className="grid gap-2">
+                                    <Label htmlFor="bio">Bio</Label>
+
+                                    <textarea
+                                        id="bio"
+                                        name="bio"
+                                        className="mt-1 block w-full rounded-lg border border-border bg-background p-3 text-sm"
+                                        defaultValue={auth.user.bio ?? ''}
+                                        placeholder="Ceritakan pengalaman mengajar, keahlian, dsb."
+                                        rows={3}
+                                    />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errors.bio}
+                                    />
+                                </div>

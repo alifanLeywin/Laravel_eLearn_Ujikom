@@ -12,6 +12,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -45,6 +46,7 @@ class CourseController extends Controller
             ->map(fn (Course $course) => [
                 'id' => $course->id,
                 'title' => $course->title,
+                'cover_image' => $course->cover_image,
                 'slug' => $course->slug,
                 'status' => $course->status,
                 'level' => $course->level,
@@ -121,6 +123,8 @@ class CourseController extends Controller
                 'title' => $course->title,
                 'slug' => $course->slug,
                 'description' => $course->description,
+                'cover_image' => $course->cover_image,
+                'price' => $course->price,
                 'status' => $course->status,
                 'level' => $course->level,
                 'category_id' => $course->category_id,
@@ -147,16 +151,22 @@ class CourseController extends Controller
         }
 
         $teacherId = $data['teacher_id'] ?? ($user?->role === UserRole::Teacher ? $user->id : null);
+        $coverImagePath = $this->storeCover($request);
 
         $course = Course::create([
             'title' => $data['title'],
             'slug' => $this->uniqueSlug($data['slug'] ?? Str::slug($data['title']), $tenantId),
             'description' => $data['description'] ?? null,
+            'cover_image' => $coverImagePath,
+            'price' => $data['price'] ?? null,
             'tenant_id' => $tenantId,
             'teacher_id' => $teacherId,
             'category_id' => $data['category_id'] ?? null,
             'status' => $data['status'],
             'level' => $data['level'] ?? null,
+            'published_at' => ($data['status'] === 'published')
+                ? ($data['published_at'] ?? now())
+                : null,
         ]);
 
         return redirect()->route('admin.courses.show', $course)->with('success', 'Course created.');
@@ -167,14 +177,20 @@ class CourseController extends Controller
         $this->authorize('update', $course);
 
         $data = $request->validated();
+        $coverImagePath = $this->storeCover($request, $course->cover_image);
 
         $course->update([
             'title' => $data['title'],
             'slug' => $this->uniqueSlug($data['slug'] ?? Str::slug($data['title']), $course->tenant_id, $course->id),
             'description' => $data['description'] ?? null,
+            'cover_image' => $coverImagePath,
+            'price' => $data['price'] ?? null,
             'category_id' => $data['category_id'] ?? null,
             'status' => $data['status'],
             'level' => $data['level'] ?? null,
+            'published_at' => ($data['status'] === 'published')
+                ? ($data['published_at'] ?? $course->published_at ?? now())
+                : null,
         ]);
 
         return back()->with('success', 'Course updated.');
@@ -194,6 +210,9 @@ class CourseController extends Controller
 
         if ($user?->role === UserRole::Admin) {
             $query->where('tenant_id', $user->tenant_id);
+        }
+        if ($user?->role === UserRole::Teacher) {
+            return $query->whereKey($user->id)->get(['id', 'name']);
         }
 
         return $query->get(['id', 'name']);
@@ -235,5 +254,18 @@ class CourseController extends Controller
         }
 
         return $slug;
+    }
+
+    private function storeCover(Request $request, ?string $existingPath = null): ?string
+    {
+        if (! $request->hasFile('cover_image')) {
+            return $existingPath;
+        }
+
+        if ($existingPath) {
+            Storage::disk('public')->delete($existingPath);
+        }
+
+        return $request->file('cover_image')->store('courses', 'public');
     }
 }

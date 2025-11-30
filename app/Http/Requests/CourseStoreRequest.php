@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CourseStoreRequest extends FormRequest
@@ -21,15 +22,27 @@ class CourseStoreRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userRole = $this->user()?->role;
+        $tenantRule = $userRole === UserRole::Teacher
+            ? ['nullable', 'uuid', 'exists:tenants,id']
+            : ['required', 'uuid', 'exists:tenants,id'];
+
+        $teacherRule = $userRole === UserRole::Teacher
+            ? ['nullable', 'uuid', 'exists:users,id']
+            : ['required', 'uuid', 'exists:users,id'];
+
         return [
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'tenant_id' => ['nullable', 'uuid', 'exists:tenants,id'],
-            'teacher_id' => ['nullable', 'uuid', 'exists:users,id'],
+            'cover_image' => ['nullable', 'image', 'max:2048'],
+            'price' => ['nullable', 'numeric', 'min:0'],
+            'tenant_id' => $tenantRule,
+            'teacher_id' => $teacherRule,
             'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
             'status' => ['required', 'string', 'in:draft,published'],
             'level' => ['nullable', 'string', 'max:100'],
+            'published_at' => ['nullable', 'date'],
         ];
     }
 }

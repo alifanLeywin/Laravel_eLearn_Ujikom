@@ -7,12 +7,30 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\TenantController;
+use App\Http\Controllers\PublicSite\CourseController as PublicCourseController;
 use App\Http\Controllers\PublicSite\HomeController;
+use App\Http\Controllers\PublicSite\TeacherController as PublicTeacherController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/courses', [PublicCourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course:slug}', [PublicCourseController::class, 'show'])->name('courses.show');
+Route::post('/courses/{course:slug}/enroll', [PublicCourseController::class, 'enroll'])
+    ->middleware('auth')
+    ->name('courses.enroll');
+Route::post('/courses/{course:slug}/comments', [\App\Http\Controllers\PublicSite\CourseCommentController::class, 'store'])
+    ->middleware('auth')
+    ->name('courses.comments.store');
+Route::put('/courses/{course:slug}/comments/{comment}', [\App\Http\Controllers\PublicSite\CourseCommentController::class, 'update'])
+    ->middleware('auth')
+    ->name('courses.comments.update');
+Route::delete('/courses/{course:slug}/comments/{comment}', [\App\Http\Controllers\PublicSite\CourseCommentController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('courses.comments.destroy');
+Route::get('/teachers', [PublicTeacherController::class, 'index'])->name('teachers.index');
+Route::get('/teachers/{teacher:slug}', [PublicTeacherController::class, 'show'])->name('teachers.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -63,6 +81,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('admin/courses/{course}/modules/{module}/lessons', [LessonController::class, 'store'])->name('admin.lessons.store');
         Route::put('admin/courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'update'])->name('admin.lessons.update');
         Route::delete('admin/courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('admin.lessons.destroy');
+        Route::post('admin/courses/{course}/enrollments', [\App\Http\Controllers\Admin\EnrollmentController::class, 'store'])->name('admin.enrollments.store');
+        Route::put('admin/courses/{course}/enrollments/{enrollment}', [\App\Http\Controllers\Admin\EnrollmentController::class, 'update'])->name('admin.enrollments.update');
+        Route::delete('admin/courses/{course}/enrollments/{enrollment}', [\App\Http\Controllers\Admin\EnrollmentController::class, 'destroy'])->name('admin.enrollments.destroy');
+        Route::post('admin/courses/{course}/modules/{module}/lessons/{lesson}/assignments', [\App\Http\Controllers\Admin\AssignmentController::class, 'store'])->name('admin.assignments.store');
+        Route::put('admin/courses/{course}/modules/{module}/lessons/{lesson}/assignments/{assignment}', [\App\Http\Controllers\Admin\AssignmentController::class, 'update'])->name('admin.assignments.update');
+        Route::delete('admin/courses/{course}/modules/{module}/lessons/{lesson}/assignments/{assignment}', [\App\Http\Controllers\Admin\AssignmentController::class, 'destroy'])->name('admin.assignments.destroy');
+        Route::post('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'store'])->name('admin.quizzes.store');
+        Route::put('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}', [\App\Http\Controllers\Admin\QuizController::class, 'update'])->name('admin.quizzes.update');
+        Route::delete('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}', [\App\Http\Controllers\Admin\QuizController::class, 'destroy'])->name('admin.quizzes.destroy');
+        Route::post('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions', [\App\Http\Controllers\Admin\QuestionController::class, 'store'])->name('admin.questions.store');
+        Route::put('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'update'])->name('admin.questions.update');
+        Route::delete('admin/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'destroy'])->name('admin.questions.destroy');
+
+        Route::get('admin/teachers', [\App\Http\Controllers\Admin\TeacherController::class, 'index'])->name('admin.teachers.index');
+        Route::get('admin/teachers/create', [\App\Http\Controllers\Admin\TeacherController::class, 'create'])->name('admin.teachers.create');
+        Route::post('admin/teachers', [\App\Http\Controllers\Admin\TeacherController::class, 'store'])->name('admin.teachers.store');
+        Route::delete('admin/teachers/{teacher}', [\App\Http\Controllers\Admin\TeacherController::class, 'destroy'])->name('admin.teachers.destroy');
     });
 
     Route::middleware('role:super_admin,admin,teacher')->group(function () {
@@ -84,6 +119,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('teacher/courses/{course}/modules/{module}/lessons', [LessonController::class, 'store'])->name('teacher.lessons.store');
         Route::put('teacher/courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'update'])->name('teacher.lessons.update');
         Route::delete('teacher/courses/{course}/modules/{module}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('teacher.lessons.destroy');
+        Route::post('teacher/courses/{course}/enrollments', [\App\Http\Controllers\Admin\EnrollmentController::class, 'store'])->name('teacher.enrollments.store');
+        Route::put('teacher/courses/{course}/enrollments/{enrollment}', [\App\Http\Controllers\Admin\EnrollmentController::class, 'update'])->name('teacher.enrollments.update');
+        Route::delete('teacher/courses/{course}/enrollments/{enrollment}', [\App\Http\Controllers\Admin\EnrollmentController::class, 'destroy'])->name('teacher.enrollments.destroy');
+        Route::post('teacher/courses/{course}/modules/{module}/lessons/{lesson}/assignments', [\App\Http\Controllers\Admin\AssignmentController::class, 'store'])->name('teacher.assignments.store');
+        Route::put('teacher/courses/{course}/modules/{module}/lessons/{lesson}/assignments/{assignment}', [\App\Http\Controllers\Admin\AssignmentController::class, 'update'])->name('teacher.assignments.update');
+        Route::delete('teacher/courses/{course}/modules/{module}/lessons/{lesson}/assignments/{assignment}', [\App\Http\Controllers\Admin\AssignmentController::class, 'destroy'])->name('teacher.assignments.destroy');
+        Route::post('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes', [\App\Http\Controllers\Admin\QuizController::class, 'store'])->name('teacher.quizzes.store');
+        Route::put('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}', [\App\Http\Controllers\Admin\QuizController::class, 'update'])->name('teacher.quizzes.update');
+        Route::delete('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}', [\App\Http\Controllers\Admin\QuizController::class, 'destroy'])->name('teacher.quizzes.destroy');
+        Route::post('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions', [\App\Http\Controllers\Admin\QuestionController::class, 'store'])->name('teacher.questions.store');
+        Route::put('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'update'])->name('teacher.questions.update');
+        Route::delete('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'destroy'])->name('teacher.questions.destroy');
     });
 
     Route::middleware('role:super_admin,admin,student')->group(function () {

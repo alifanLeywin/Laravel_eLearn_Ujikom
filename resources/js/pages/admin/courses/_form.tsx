@@ -11,11 +11,13 @@ type CourseFormProps = {
         title?: string;
         slug?: string | null;
         description?: string | null;
+        cover_image?: string | null;
         tenant_id?: string | null;
         teacher_id?: string | null;
         category_id?: string | null;
         status?: string;
         level?: string | null;
+        price?: string | number | null;
     };
     tenants: Option[];
     teachers: Option[];
@@ -38,11 +40,15 @@ export function CourseForm({
         title: initialValues?.title ?? '',
         slug: initialValues?.slug ?? '',
         description: initialValues?.description ?? '',
-        tenant_id: initialValues?.tenant_id ?? tenants[0]?.id ?? '',
-        teacher_id: initialValues?.teacher_id ?? teachers[0]?.id ?? '',
+        cover_image: null as File | null,
+        tenant_id: initialValues?.tenant_id ?? '',
+        teacher_id:
+            initialValues?.teacher_id ??
+            (isTeacherRoute ? teachers[0]?.id ?? '' : teachers[0]?.id ?? ''),
         category_id: initialValues?.category_id ?? '',
         status: initialValues?.status ?? 'draft',
         level: initialValues?.level ?? '',
+        price: initialValues?.price ?? '',
     });
 
     const onSubmit = (event: FormEvent) => {
@@ -50,9 +56,10 @@ export function CourseForm({
         clearErrors();
         form[method](submitUrl, {
             preserveScroll: true,
+            forceFormData: true,
             onSuccess: () => {
                 if (method === 'post') {
-                    reset('title', 'slug', 'description', 'category_id', 'level');
+                    reset('title', 'slug', 'description', 'category_id', 'level', 'cover_image', 'price');
                 }
             },
         });
@@ -80,6 +87,20 @@ export function CourseForm({
                 {errors.slug && <p className="text-xs text-red-500">{errors.slug}</p>}
             </div>
 
+            <div className="space-y-2 md:col-span-2">
+                <label className="text-sm font-semibold text-foreground">Cover image</label>
+                <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                        setData('cover_image', event.target.files?.[0] ?? null)
+                    }
+                />
+                {errors.cover_image && (
+                    <p className="text-xs text-red-500">{errors.cover_image}</p>
+                )}
+            </div>
+
             {!isTeacherRoute && (
                 <>
                     <div className="space-y-2">
@@ -89,7 +110,9 @@ export function CourseForm({
                             onChange={(event) => setData('tenant_id', event.target.value)}
                             className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
                         >
-                            <option value="">Select tenant</option>
+                            <option value="" disabled>
+                                Select tenant
+                            </option>
                             {tenants.map((tenant) => (
                                 <option key={tenant.id} value={tenant.id}>
                                     {tenant.name}
@@ -107,14 +130,22 @@ export function CourseForm({
                             value={data.teacher_id ?? ''}
                             onChange={(event) => setData('teacher_id', event.target.value)}
                             className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+                            disabled={isTeacherRoute}
                         >
-                            <option value="">Assign teacher</option>
+                            {!isTeacherRoute && (
+                                <option value="" disabled>
+                                    Assign teacher
+                                </option>
+                            )}
                             {teachers.map((teacher) => (
                                 <option key={teacher.id} value={teacher.id}>
                                     {teacher.name}
                                 </option>
                             ))}
                         </select>
+                        {isTeacherRoute && (
+                            <input type="hidden" name="teacher_id" value={data.teacher_id ?? ''} />
+                        )}
                         {errors.teacher_id && (
                             <p className="text-xs text-red-500">{errors.teacher_id}</p>
                         )}
@@ -129,6 +160,9 @@ export function CourseForm({
                     onChange={(event) => setData('category_id', event.target.value)}
                     className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
                 >
+                    <option value="" disabled>
+                        Select category (optional)
+                    </option>
                     <option value="">No category</option>
                     {categories.map((category) => (
                         <option key={category.id} value={category.id}>
@@ -156,12 +190,32 @@ export function CourseForm({
 
             <div className="space-y-2 md:col-span-2">
                 <label className="text-sm font-semibold text-foreground">Level</label>
-                <Input
+                <select
                     value={data.level ?? ''}
                     onChange={(event) => setData('level', event.target.value)}
-                    placeholder="Beginner / Intermediate / Advanced"
-                />
+                    className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+                >
+                    <option value="" disabled>
+                        Select level
+                    </option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
                 {errors.level && <p className="text-xs text-red-500">{errors.level}</p>}
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+                <label className="text-sm font-semibold text-foreground">Price</label>
+                <Input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={data.price ?? ''}
+                    onChange={(event) => setData('price', event.target.value)}
+                    placeholder="0.00"
+                />
+                {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
             </div>
 
             <div className="space-y-2 md:col-span-2">

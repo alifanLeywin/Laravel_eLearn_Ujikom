@@ -42,6 +42,7 @@ class Course extends Model
         'title',
         'slug',
         'description',
+        'cover_image',
         'price',
         'status',
         'level',

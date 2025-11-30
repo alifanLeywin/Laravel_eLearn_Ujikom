@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Folder, LayoutGrid, Shield, Tag, BookOpen } from 'lucide-react';
+import { Folder, LayoutGrid, Shield, Tag, BookOpen, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export function AppSidebar() {
@@ -25,6 +25,7 @@ export function AppSidebar() {
             href: dashboard(),
             icon: LayoutGrid,
         },
+        
     ];
 
     if (auth.user?.role === 'super_admin') {
@@ -38,6 +39,11 @@ export function AppSidebar() {
                 title: 'Categories',
                 href: '/admin/categories',
                 icon: Tag,
+            },
+            {
+                title: 'Teachers',
+                href: '/admin/teachers',
+                icon: Users,
             },
             {
                 title: 'Courses',
@@ -55,6 +61,11 @@ export function AppSidebar() {
                 icon: Tag,
             },
             {
+                title: 'Teachers',
+                href: '/admin/teachers',
+                icon: Users,
+            },
+            {
                 title: 'Courses',
                 href: '/admin/courses',
                 icon: BookOpen,
@@ -70,7 +81,15 @@ export function AppSidebar() {
         });
     }
 
-    const footerNavItems: NavItem[] = [];
+    const footerNavItems: NavItem[] = [
+
+        {
+            title: 'Home',
+            href: '/',
+            icon: Folder,
+        },
+        
+    ];
 
     return (
         <Sidebar collapsible="icon" variant="inset">

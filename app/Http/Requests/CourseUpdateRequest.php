@@ -25,11 +25,14 @@ class CourseUpdateRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'cover_image' => ['nullable', 'image', 'max:2048'],
+            'price' => ['nullable', 'numeric', 'min:0'],
             'tenant_id' => ['nullable', 'uuid', 'exists:tenants,id'],
             'teacher_id' => ['nullable', 'uuid', 'exists:users,id'],
             'category_id' => ['nullable', 'uuid', 'exists:categories,id'],
             'status' => ['required', 'string', 'in:draft,published'],
             'level' => ['nullable', 'string', 'max:100'],
+            'published_at' => ['nullable', 'date'],
         ];
     }
 }

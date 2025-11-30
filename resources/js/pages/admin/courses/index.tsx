@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 type Course = {
     id: string;
+    cover_image?: string | null;
     title: string;
     slug: string;
     status: string;
@@ -88,15 +89,29 @@ export default function CoursesIndex({ courses, filters }: PageProps) {
                                 key={course.id}
                                 className="flex flex-col gap-2 py-3 text-sm md:flex-row md:items-center md:justify-between"
                             >
-                                <div>
-                                    <p className="font-semibold text-foreground">{course.title}</p>
-                                    <p className="text-xs text-muted-foreground">
-                                        {course.slug} · {course.status} · {course.level || 'All levels'}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                        {course.teacher ?? 'No teacher'} ·{' '}
-                                        {course.category ?? 'No category'}
-                                    </p>
+                                <div className="flex items-center gap-3">
+                                    {course.cover_image && (
+                                        <div className="h-14 w-20 overflow-hidden rounded border border-border/60">
+                                            <img
+                                                src={
+                                                    course.cover_image.startsWith('http')
+                                                        ? course.cover_image
+                                                        : `/storage/${course.cover_image}`
+                                                }
+                                                alt={course.title}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                    <div>
+                                        <p className="font-semibold text-foreground">{course.title}</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {course.slug} · {course.status} · {course.level || 'All levels'}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {course.teacher ?? 'No teacher'} · {course.category ?? 'No category'}
+                                        </p>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                                     <span>Modules {course.modules_count}</span>

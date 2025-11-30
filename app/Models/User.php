@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable
@@ -39,6 +40,8 @@ class User extends Authenticatable
     protected $fillable = [
         'tenant_id',
         'name',
+        'slug',
+        'bio',
         'email',
         'password',
         'role',
@@ -94,5 +97,28 @@ class User extends Authenticatable
     public function submissions(): HasMany
     {
         return $this->hasMany(Submission::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (User $user): void {
+            if (! $user->slug) {
+                $user->slug = static::uniqueSlug($user->name);
+            }
+        });
+    }
+
+    private static function uniqueSlug(string $name): string
+    {
+        $base = Str::slug($name) ?: Str::random(6);
+        $slug = $base;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }

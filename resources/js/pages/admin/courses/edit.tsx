@@ -11,6 +11,8 @@ type PageProps = {
         title: string;
         slug: string | null;
         description: string | null;
+        cover_image: string | null;
+        price: string | number | null;
         tenant_id: string | null;
         teacher_id: string | null;
         category_id: string | null;

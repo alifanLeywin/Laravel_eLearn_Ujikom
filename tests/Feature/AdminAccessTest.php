@@ -187,6 +187,46 @@ class AdminAccessTest extends TestCase
             ->assertSee($course->title);
     }
 
+    public function test_super_admin_requires_tenant_and_teacher_when_creating_course(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($superAdmin)
+            ->post(route('admin.courses.store'), [
+                'title' => 'No Tenant',
+                'status' => 'draft',
+            ])
+            ->assertSessionHasErrors(['tenant_id', 'teacher_id']);
+    }
+
+    public function test_super_admin_can_create_course_with_tenant_and_teacher(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $teacher = User::factory()->teacher()->for($tenant)->create();
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $response = $this->actingAs($superAdmin)
+            ->post(route('admin.courses.store'), [
+                'title' => 'Tenant Course',
+                'status' => 'published',
+                'tenant_id' => $tenant->id,
+                'teacher_id' => $teacher->id,
+                'price' => 123.45,
+            ]);
+
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas(Course::class, [
+            'title' => 'Tenant Course',
+            'tenant_id' => $tenant->id,
+            'teacher_id' => $teacher->id,
+            'price' => 123.45,
+            'status' => 'published',
+        ]);
+
+        $this->assertNotNull(Course::where('title', 'Tenant Course')->first()->published_at);
+    }
+
     public function test_super_admin_can_bulk_delete_tenants(): void
     {
         $superAdmin = User::factory()->superAdmin()->create();

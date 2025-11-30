@@ -28,6 +28,7 @@ class UserFactory extends Factory
         return [
             'tenant_id' => Tenant::factory(),
             'name' => fake()->name(),
+            'slug' => fn (array $attrs) => \Illuminate\Support\Str::slug($attrs['name']) ?: \Illuminate\Support\Str::random(6),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
+import PublicLayout from '@/layouts/public-layout';
 import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
@@ -16,7 +17,10 @@ import { ArrowRight, BookOpen, GraduationCap, Search } from 'lucide-react';
 type Course = {
     id: string;
     title: string;
+    slug: string;
+    status: string;
     description?: string | null;
+    cover_image?: string | null;
     level?: string | null;
     price?: string | number | null;
     teacher?: string | null;
@@ -69,9 +73,10 @@ export default function PublicHome({
     }, [auth.user]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 text-slate-900 transition-colors duration-300 dark:from-[#0b1021] dark:via-[#0b1021] dark:to-[#0f162e] dark:text-white">
-            <Head title="E-Learn" />
-            <header className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 pb-12 pt-10 md:flex-row md:items-center md:justify-between md:pt-14">
+        <PublicLayout>
+            <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 text-slate-900 transition-colors duration-300 dark:from-[#0b1021] dark:via-[#0b1021] dark:to-[#0f162e] dark:text-white">
+                <Head title="E-Learn" />
+                <header className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 pb-12 pt-10 md:flex-row md:items-center md:justify-between md:pt-14">
                 <div className="flex w-full items-center justify-end md:absolute md:right-6 md:top-6">
                     <AppearanceToggleDropdown />
                 </div>
@@ -133,9 +138,9 @@ export default function PublicHome({
                         </p>
                     </div>
                 </div>
-            </header>
+                </header>
 
-            <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-16">
+                <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-16">
                 <section className="rounded-2xl border border-slate-200 bg-white/80 p-5 backdrop-blur dark:border-white/10 dark:bg-white/5">
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div>
@@ -175,7 +180,16 @@ export default function PublicHome({
                             key={course.id}
                             className="border-slate-200 bg-white/90 text-slate-900 ring-1 ring-slate-200 backdrop-blur transition hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:ring-white/10"
                         >
-                            <CardHeader>
+                            {course.cover_image && (
+                                <div className="h-40 w-full overflow-hidden rounded-t-xl border-b border-slate-100 bg-slate-100 dark:border-white/10 dark:bg-white/5">
+                                    <img
+                                        src={course.cover_image.startsWith('http') ? course.cover_image : `/storage/${course.cover_image}`}
+                                        alt={course.title}
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                            )}
+                            <CardHeader className={course.cover_image ? 'pb-3' : undefined}>
                                 <CardTitle className="text-lg">
                                     {course.title}
                                 </CardTitle>
@@ -189,21 +203,22 @@ export default function PublicHome({
                                         'Materi terkurasi dengan quiz, assignment, dan progress tracking.'}
                                 </p>
                                 <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
-                                    <span>
-                                        {course.teacher ?? 'Instructor TBD'}
+                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
+                                        {course.status}
                                     </span>
                                     <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
                                         {course.level ?? 'All levels'}
                                     </span>
                                 </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-700 dark:text-blue-100/70">
-                                        {course.price
-                                            ? `Rp ${course.price}`
-                                            : 'Gratis'}
+                                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
+                                    <span>{course.teacher ?? 'Instructor TBD'}</span>
+                                    <span className="text-xs text-slate-700 dark:text-blue-100/70">
+                                        {course.price ? `Rp ${course.price}` : 'Gratis'}
                                     </span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
                                     <Link
-                                        href={auth.user ? dashboard() : register()}
+                                        href={`/courses/${course.slug}`}
                                         className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 dark:text-emerald-200 dark:hover:text-white"
                                     >
                                         Lihat detail →
@@ -219,7 +234,8 @@ export default function PublicHome({
                         </div>
                     )}
                 </section>
-            </main>
-        </div>
+                </main>
+            </div>
+        </PublicLayout>
     );
 }
