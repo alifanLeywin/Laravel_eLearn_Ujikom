@@ -196,39 +196,69 @@ erDiagram
 
 ## 🎭 UML Use Case (Role Responsibilities)
 ```mermaid
-usecaseDiagram
-    actor SA as "Super Admin"
-    actor AD as "Admin"
-    actor TE as "Teacher"
-    actor ST as "Student"
-    actor GU as "Guest"
+flowchart TD
+    classDef actor fill:#fdf2f8,stroke:#fb7185,color:#9f1239,stroke-width:2px;
+    classDef action fill:#fff7ed,stroke:#fb923c,color:#9a3412,stroke-dasharray: 3 3;
 
-    SA --> (Kelola tenant)
-    SA --> (Kelola admin/teacher)
-    SA --> (Kelola kategori & course)
+    SA((Super Admin)):::actor
+    AD((Admin)):::actor
+    TE((Teacher)):::actor
+    ST((Student)):::actor
+    GU((Guest)):::actor
 
-    AD --> (Kelola kategori)
-    AD --> (Kelola teacher)
-    AD --> (Kelola course)
-    AD --> (Lihat analytics course)
+    saTenant[Kelola tenant]:::action
+    saStaff[Kelola admin/teacher]:::action
+    saCatalog[Kelola kategori & course]:::action
 
-    TE --> (Kelola course pribadi)
-    TE --> (Kelola module & lesson)
-    TE --> (Buat quiz & soal)
-    TE --> (Buat assignment)
-    TE --> (Nilai submission & feedback)
-    TE --> (Lihat progress siswa)
+    adCat[Kelola kategori]:::action
+    adTeacher[Kelola teacher]:::action
+    adCourse[Kelola course]:::action
+    adAnalytics[Lihat analytics course]:::action
 
-    ST --> (Lihat katalog & course detail)
-    ST --> (Enroll course)
-    ST --> (Selesaikan lesson)
-    ST --> (Kerjakan quiz)
-    ST --> (Upload assignment)
-    ST --> (Lihat nilai & feedback)
-    ST --> (Komentar course)
+    teCourse[Kelola course pribadi]:::action
+    teModule[Kelola module & lesson]:::action
+    teQuiz[Buat quiz & soal]:::action
+    teAssignment[Buat assignment]:::action
+    teGrade[Nilai submission & feedback]:::action
+    teProgress[Lihat progress siswa]:::action
 
-    GU --> (Lihat katalog publik)
-    GU --> (Register/Login)
+    stBrowse[Lihat katalog & course detail]:::action
+    stEnroll[Enroll course]:::action
+    stLesson[Selesaikan lesson]:::action
+    stQuiz[Kerjakan quiz]:::action
+    stUpload[Upload assignment]:::action
+    stScore[Lihat nilai & feedback]:::action
+    stComment[Komentar course]:::action
+
+    guBrowse[Lihat katalog publik]:::action
+    guAuth[Register/Login]:::action
+
+    SA --> saTenant
+    SA --> saStaff
+    SA --> saCatalog
+
+    AD --> adCat
+    AD --> adTeacher
+    AD --> adCourse
+    AD --> adAnalytics
+
+    TE --> teCourse
+    TE --> teModule
+    TE --> teQuiz
+    TE --> teAssignment
+    TE --> teGrade
+    TE --> teProgress
+
+    ST --> stBrowse
+    ST --> stEnroll
+    ST --> stLesson
+    ST --> stQuiz
+    ST --> stUpload
+    ST --> stScore
+    ST --> stComment
+
+    GU --> guBrowse
+    GU --> guAuth
 ```
 
 ## ✨ Highlights
