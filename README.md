@@ -52,7 +52,7 @@ erDiagram
         string name
         string slug
         string subscription_status
-        timestamps
+        datetime timestamps
     }
     USERS {
         uuid id PK
@@ -63,131 +63,145 @@ erDiagram
         string role "super_admin|admin|teacher|student"
         string slug
         text bio
-        timestamps softDeletes
+        datetime timestamps
+        datetime softDeletes
     }
     CATEGORIES {
         uuid id PK
         uuid tenant_id FK
         string name
-        uuid parent_id FK nullable
-        timestamps softDeletes
+        uuid parent_id FK
+        datetime timestamps
+        datetime softDeletes
     }
     COURSES {
         uuid id PK
         uuid tenant_id FK
         uuid teacher_id FK
-        uuid category_id FK nullable
+        uuid category_id FK
         string title
         string slug
-        text description nullable
-        string cover_image nullable
+        text description
+        string cover_image
         string status "draft|published"
-        string level nullable
-        datetime published_at nullable
-        timestamps softDeletes
+        string level
+        datetime published_at
+        datetime timestamps
+        datetime softDeletes
     }
     MODULES {
         uuid id PK
         uuid course_id FK
         string title
         int sort_order
-        timestamps softDeletes
+        datetime timestamps
+        datetime softDeletes
     }
     LESSONS {
         uuid id PK
         uuid module_id FK
         string title
         string type "text|video|quiz|assignment"
-        longtext content nullable
-        string video_url nullable
-        int duration nullable
-        bool is_preview default false
-        int sort_order default 0
-        timestamps softDeletes
+        longtext content
+        string video_url
+        int duration
+        bool is_preview
+        int sort_order
+        datetime timestamps
+        datetime softDeletes
     }
     QUIZZES {
         uuid id PK
         uuid lesson_id FK
-        int time_limit nullable
-        int passing_grade nullable
-        timestamps softDeletes
+        int time_limit
+        int passing_grade
+        datetime timestamps
+        datetime softDeletes
     }
     QUESTIONS {
         uuid id PK
         uuid quiz_id FK
         string type "multiple_choice|essay"
         text question_text
-        json options nullable
+        json options
         int score
-        timestamps softDeletes
+        datetime timestamps
+        datetime softDeletes
     }
     ASSIGNMENTS {
         uuid id PK
         uuid lesson_id FK
-        datetime due_date nullable
-        int max_score default 100
-        timestamps softDeletes
+        datetime due_date
+        int max_score
+        datetime timestamps
+        datetime softDeletes
     }
     SUBMISSIONS {
         uuid id PK
         uuid assignment_id FK
         uuid user_id FK
         string file_path
-        int grade nullable
-        text feedback_text nullable
-        datetime submitted_at nullable
-        timestamps softDeletes
+        int grade
+        text feedback_text
+        datetime submitted_at
+        datetime timestamps
+        datetime softDeletes
     }
     QUIZ_ATTEMPTS {
         uuid id PK
         uuid user_id FK
         uuid quiz_id FK
-        int score nullable
-        bool passed default false
-        datetime submitted_at nullable
-        json answers nullable
-        timestamps softDeletes
+        int score
+        bool passed
+        datetime submitted_at
+        json answers
+        datetime timestamps
+        datetime softDeletes
     }
     ENROLLMENTS {
         uuid id PK
         uuid user_id FK
         uuid course_id FK
         string status "active|completed|expired"
-        datetime enrolled_at nullable
-        timestamps softDeletes
+        datetime enrolled_at
+        datetime timestamps
+        datetime softDeletes
     }
     COURSE_PROGRESS {
         uuid id PK
         uuid enrollment_id FK
         uuid lesson_id FK
-        datetime completed_at nullable
-        timestamps softDeletes
+        datetime completed_at
+        datetime timestamps
+        datetime softDeletes
     }
     ATTACHMENTS {
         uuid id PK
         uuid attachable_id
         string attachable_type
         string file_path
-        json meta nullable
-        timestamps softDeletes
+        json meta
+        datetime timestamps
+        datetime softDeletes
     }
     COURSE_COMMENTS {
         uuid id PK
         uuid course_id FK
         uuid user_id FK
         text body
-        timestamps softDeletes
+        datetime timestamps
+        datetime softDeletes
     }
 ```
 
 ## 🎭 UML Use Case (Role Responsibilities)
 ```mermaid
 usecaseDiagram
-    actor SuperAdmin as SA
-    actor Admin as AD
-    actor Teacher as TE
-    actor Student as ST
-    actor Guest as GU
+    actor "Super Admin" as SA
+    actor "Admin" as AD
+    actor "Teacher" as TE
+    actor "Student" as ST
+    actor "Guest" as GU
 
     SA --> (Kelola tenant)
     SA --> (Kelola admin/teacher)
