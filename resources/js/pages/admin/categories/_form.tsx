@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
 type Option = { id: string; name: string };
@@ -37,7 +37,10 @@ export function CategoryForm({
         form[method](submitUrl, {
             preserveScroll: true,
             onSuccess: () => {
-                if (method === 'post') {
+                const isCreate = method === 'post';
+                window.alert(isCreate ? 'Kategori berhasil dibuat.' : 'Kategori berhasil diperbarui.');
+                router.visit('/admin/categories');
+                if (isCreate) {
                     reset('name', 'parent_id');
                 }
             },

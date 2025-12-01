@@ -22,7 +22,7 @@ class HomeController extends Controller
         $courses = Course::query()
             ->where('status', 'published')
             ->with(['teacher:id,name', 'category:id,name'])
-            ->select(['id', 'title', 'slug', 'status', 'description', 'level', 'price', 'teacher_id', 'category_id', 'cover_image'])
+            ->select(['id', 'title', 'slug', 'status', 'description', 'level', 'teacher_id', 'category_id', 'cover_image'])
             ->when(filled($search), function ($query) use ($search) {
                 $query->where(function ($builder) use ($search) {
                     $builder
@@ -40,7 +40,6 @@ class HomeController extends Controller
                 'status' => $course->status,
                 'description' => $course->description,
                 'level' => $course->level,
-                'price' => $course->price,
                 'cover_image' => $course->cover_image,
                 'teacher' => $course->teacher?->name,
                 'category' => $course->category?->name,

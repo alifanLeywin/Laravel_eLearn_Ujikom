@@ -43,7 +43,6 @@ class Course extends Model
         'slug',
         'description',
         'cover_image',
-        'price',
         'status',
         'level',
         'published_at',
@@ -56,7 +55,6 @@ class Course extends Model
     {
         return [
             'published_at' => 'datetime',
-            'price' => 'decimal:2',
         ];
     }
 

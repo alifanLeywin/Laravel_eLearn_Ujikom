@@ -38,7 +38,6 @@ class CourseController extends Controller
                 'title' => $course->title,
                 'description' => $course->description,
                 'cover_image' => $course->cover_image,
-                'price' => $course->price,
                 'level' => $course->level,
                 'status' => $course->status,
                 'teacher' => $course->teacher?->name,
@@ -97,7 +96,6 @@ class CourseController extends Controller
                 'status' => $course->status,
                 'description' => $course->description,
                 'cover_image' => $course->cover_image,
-                'price' => $course->price,
                 'level' => $course->level,
                 'teacher' => $course->teacher?->name,
                 'teacher_slug' => $course->teacher?->slug,
@@ -138,6 +136,30 @@ class CourseController extends Controller
         );
 
         return back()->with('success', 'Enrolled to course.');
+    }
+
+    public function unenroll(Request $request, Course $course): RedirectResponse
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        if ($user->role !== UserRole::Student) {
+            abort(403, 'Only students can unenroll.');
+        }
+
+        $enrollment = Enrollment::query()
+            ->where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->first();
+
+        if ($enrollment) {
+            $enrollment->delete();
+        }
+
+        return back()->with('success', 'Kamu telah keluar dari course ini.');
     }
 
     private function canViewUnpublished(?User $user, Course $course): bool

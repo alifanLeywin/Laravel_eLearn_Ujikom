@@ -33,6 +33,9 @@ Route::get('/teachers', [PublicTeacherController::class, 'index'])->name('teache
 Route::get('/teachers/{teacher:slug}', [PublicTeacherController::class, 'show'])->name('teachers.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('submissions/{submission}/download', \App\Http\Controllers\SubmissionDownloadController::class)
+        ->name('submissions.download');
+
     Route::get('dashboard', function () {
         $user = auth()->user();
 
@@ -67,12 +70,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('admin.categories.bulk-destroy');
 
         Route::get('admin/courses', [CourseController::class, 'index'])->name('admin.courses.index');
+        Route::get('admin/courses/trashed', [CourseController::class, 'trashed'])->name('admin.courses.trashed');
         Route::get('admin/courses/create', [CourseController::class, 'create'])->name('admin.courses.create');
         Route::get('admin/courses/{course}', [CourseController::class, 'show'])->name('admin.courses.show');
         Route::get('admin/courses/{course}/edit', [CourseController::class, 'edit'])->name('admin.courses.edit');
         Route::post('admin/courses', [CourseController::class, 'store'])->name('admin.courses.store');
         Route::put('admin/courses/{course}', [CourseController::class, 'update'])->name('admin.courses.update');
         Route::delete('admin/courses/{course}', [CourseController::class, 'destroy'])->name('admin.courses.destroy');
+        Route::post('admin/courses/{course}/restore', [CourseController::class, 'restore'])
+            ->withTrashed()
+            ->name('admin.courses.restore');
+        Route::delete('admin/courses/{course}/force', [CourseController::class, 'forceDestroy'])
+            ->withTrashed()
+            ->name('admin.courses.force-destroy');
 
         Route::post('admin/courses/{course}/modules', [ModuleController::class, 'store'])->name('admin.modules.store');
         Route::put('admin/courses/{course}/modules/{module}', [ModuleController::class, 'update'])->name('admin.modules.update');
@@ -105,12 +115,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('teacher.dashboard');
 
         Route::get('teacher/courses', [CourseController::class, 'index'])->name('teacher.courses.index');
+        Route::get('teacher/courses/trashed', [CourseController::class, 'trashed'])->name('teacher.courses.trashed');
         Route::get('teacher/courses/create', [CourseController::class, 'create'])->name('teacher.courses.create');
         Route::get('teacher/courses/{course}', [CourseController::class, 'show'])->name('teacher.courses.show');
         Route::get('teacher/courses/{course}/edit', [CourseController::class, 'edit'])->name('teacher.courses.edit');
         Route::post('teacher/courses', [CourseController::class, 'store'])->name('teacher.courses.store');
         Route::put('teacher/courses/{course}', [CourseController::class, 'update'])->name('teacher.courses.update');
         Route::delete('teacher/courses/{course}', [CourseController::class, 'destroy'])->name('teacher.courses.destroy');
+        Route::post('teacher/courses/{course}/restore', [CourseController::class, 'restore'])
+            ->withTrashed()
+            ->name('teacher.courses.restore');
+        Route::delete('teacher/courses/{course}/force', [CourseController::class, 'forceDestroy'])
+            ->withTrashed()
+            ->name('teacher.courses.force-destroy');
 
         Route::post('teacher/courses/{course}/modules', [ModuleController::class, 'store'])->name('teacher.modules.store');
         Route::put('teacher/courses/{course}/modules/{module}', [ModuleController::class, 'update'])->name('teacher.modules.update');
@@ -131,11 +148,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions', [\App\Http\Controllers\Admin\QuestionController::class, 'store'])->name('teacher.questions.store');
         Route::put('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'update'])->name('teacher.questions.update');
         Route::delete('teacher/courses/{course}/modules/{module}/lessons/{lesson}/quizzes/{quiz}/questions/{question}', [\App\Http\Controllers\Admin\QuestionController::class, 'destroy'])->name('teacher.questions.destroy');
+
+        Route::get('teacher/courses/{course}/students', \App\Http\Controllers\Teacher\CourseStudentsController::class)
+            ->name('teacher.courses.students');
+        Route::get('teacher/courses/{course}/students/{enrollment}', \App\Http\Controllers\Teacher\StudentProgressController::class)
+            ->name('teacher.courses.students.progress');
+        Route::patch('teacher/courses/{course}/submissions/{submission}', [\App\Http\Controllers\Teacher\SubmissionController::class, 'update'])
+            ->name('teacher.submissions.update');
     });
 
     Route::middleware('role:super_admin,admin,student')->group(function () {
         Route::get('student/dashboard', StudentDashboardController::class)
             ->name('student.dashboard');
+        Route::get('student/courses/{course}', [\App\Http\Controllers\Student\CourseController::class, 'show'])->name('student.courses.show');
+        Route::post('student/courses/{course}/lessons/{lesson}/complete', [\App\Http\Controllers\Student\CourseController::class, 'complete'])->name('student.courses.lessons.complete');
+        Route::delete('student/courses/{course}/lessons/{lesson}/complete', [\App\Http\Controllers\Student\CourseController::class, 'incomplete'])->name('student.courses.lessons.incomplete');
+        Route::get('student/courses/{course}/lessons/{lesson}/quiz', [\App\Http\Controllers\Student\QuizController::class, 'show'])->name('student.quizzes.show');
+        Route::post('student/courses/{course}/lessons/{lesson}/quiz', [\App\Http\Controllers\Student\QuizController::class, 'submit'])->name('student.quizzes.submit');
+        Route::get('student/courses/{course}/lessons/{lesson}/assignment', [\App\Http\Controllers\Student\AssignmentController::class, 'show'])->name('student.assignments.show');
+        Route::post('student/courses/{course}/lessons/{lesson}/assignment', [\App\Http\Controllers\Student\AssignmentController::class, 'submit'])->name('student.assignments.submit');
+        Route::delete('courses/{course}/enroll', [\App\Http\Controllers\PublicSite\CourseController::class, 'unenroll'])->name('courses.unenroll');
     });
 
     Route::middleware('role:super_admin')->group(function () {

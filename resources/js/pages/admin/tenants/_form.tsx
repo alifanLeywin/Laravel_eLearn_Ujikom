@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
 type TenantFormProps = {
@@ -26,7 +26,10 @@ export function TenantForm({ initialValues, submitUrl, method = 'post' }: Tenant
         form[method](submitUrl, {
             preserveScroll: true,
             onSuccess: () => {
-                if (method === 'post') {
+                const isCreate = method === 'post';
+                window.alert(isCreate ? 'Tenant berhasil dibuat.' : 'Tenant berhasil diperbarui.');
+                router.visit('/admin/tenants');
+                if (isCreate) {
                     reset();
                 }
             },

@@ -27,7 +27,6 @@ class CourseFactory extends Factory
             'title' => $this->faker->sentence(4),
             'slug' => $this->faker->unique()->slug(),
             'description' => $this->faker->paragraph(),
-            'price' => $this->faker->randomFloat(2, 0, 500),
             'status' => 'draft',
             'level' => $this->faker->randomElement(['beginner', 'intermediate', 'advanced']),
             'published_at' => null,

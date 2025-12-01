@@ -43,14 +43,13 @@ class TeacherController extends Controller
             ->where('status', 'published')
             ->with('category:id,name')
             ->latest()
-            ->get(['id', 'slug', 'title', 'cover_image', 'level', 'price', 'category_id'])
+            ->get(['id', 'slug', 'title', 'cover_image', 'level', 'category_id'])
             ->map(fn (Course $course) => [
                 'id' => $course->id,
                 'slug' => $course->slug,
                 'title' => $course->title,
                 'cover_image' => $course->cover_image,
                 'level' => $course->level,
-                'price' => $course->price,
                 'category' => $course->category?->name,
             ]);
 

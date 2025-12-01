@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 
 type Option = { id: string; name: string };
@@ -49,16 +49,20 @@ export function CourseForm({
         status: initialValues?.status ?? 'draft',
         level: initialValues?.level ?? '',
         price: initialValues?.price ?? '',
+        _method: method === 'put' ? 'put' : 'post',
     });
 
     const onSubmit = (event: FormEvent) => {
         event.preventDefault();
         clearErrors();
-        form[method](submitUrl, {
+        form.post(submitUrl, {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {
-                if (method === 'post') {
+                const isCreate = method === 'post';
+                window.alert(isCreate ? 'Berhasil membuat course.' : 'Berhasil memperbarui course.');
+                router.visit(isTeacherRoute ? '/teacher/courses' : '/admin/courses');
+                if (isCreate) {
                     reset('title', 'slug', 'description', 'category_id', 'level', 'cover_image', 'price');
                 }
             },
@@ -203,19 +207,6 @@ export function CourseForm({
                     <option value="advanced">Advanced</option>
                 </select>
                 {errors.level && <p className="text-xs text-red-500">{errors.level}</p>}
-            </div>
-
-            <div className="space-y-2 md:col-span-2">
-                <label className="text-sm font-semibold text-foreground">Price</label>
-                <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={data.price ?? ''}
-                    onChange={(event) => setData('price', event.target.value)}
-                    placeholder="0.00"
-                />
-                {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
             </div>
 
             <div className="space-y-2 md:col-span-2">

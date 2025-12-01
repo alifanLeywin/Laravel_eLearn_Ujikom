@@ -72,6 +72,12 @@ export default function CoursesIndex({ courses, filters }: PageProps) {
                     >
                         <Button>Create course</Button>
                     </Link>
+                    <Link
+                        href={isTeacherRoute ? '/teacher/courses/trashed' : '/admin/courses/trashed'}
+                        className=""
+                    >
+                        <Button variant="outline">Trash</Button>
+                    </Link>
                 </div>
 
                 <Card className="border-border/70">
@@ -135,6 +141,18 @@ export default function CoursesIndex({ courses, filters }: PageProps) {
                                         className="text-foreground hover:underline"
                                     >
                                         Edit
+                                    </Link>
+                                    <Link
+                                        href={
+                                            isTeacherRoute
+                                                ? `/teacher/courses/${course.id}`
+                                                : `/admin/courses/${course.id}`
+                                        }
+                                        method="delete"
+                                        as="button"
+                                        className="text-red-500 hover:underline"
+                                    >
+                                        Delete
                                     </Link>
                                 </div>
                             </div>

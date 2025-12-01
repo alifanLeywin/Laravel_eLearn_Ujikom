@@ -39,6 +39,7 @@ class QuizAttempt extends Model
         'score',
         'passed',
         'submitted_at',
+        'answers',
     ];
 
     /**
@@ -50,6 +51,7 @@ class QuizAttempt extends Model
             'score' => 'integer',
             'passed' => 'boolean',
             'submitted_at' => 'datetime',
+            'answers' => 'array',
         ];
     }
 

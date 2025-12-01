@@ -7,7 +7,8 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Head } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
+import { Head, Link } from '@inertiajs/react';
 import { GraduationCap, Sparkles } from 'lucide-react';
 
 type Enrollment = {
@@ -18,6 +19,7 @@ type Enrollment = {
         id: string | undefined;
         title: string | undefined;
         level: string | null | undefined;
+        slug?: string | undefined;
     } | null;
 };
 
@@ -67,9 +69,40 @@ export default function StudentDashboard({
                                         {enrollment.course?.title ??
                                             'Course tidak ditemukan'}
                                     </div>
-                                    <Badge variant="outline" className="text-xs">
-                                        {enrollment.status}
-                                    </Badge>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="outline" className="text-xs">
+                                            {enrollment.status}
+                                        </Badge>
+                                        {enrollment.course?.id && (
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="secondary"
+                                            >
+                                                <Link
+                                                    href={`/student/courses/${enrollment.course.id}`}
+                                                >
+                                                    Lanjutkan
+                                                </Link>
+                                            </Button>
+                                        )}
+                                        {enrollment.course?.id && (
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="ghost"
+                                                className="text-xs"
+                                            >
+                                                <Link
+                                                    href={`/courses/${enrollment.course.id}/enroll`}
+                                                    method="delete"
+                                                    as="button"
+                                                >
+                                                    Unenroll
+                                                </Link>
+                                            </Button>
+                                        )}
+                                    </div>
                                 </div>
                                 <p className="mt-1 text-xs text-muted-foreground">
                                     {enrollment.course?.level ?? 'All levels'}

@@ -9,6 +9,7 @@ use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Enums\UserRole;
 
 class TenantController extends Controller
 {
@@ -38,7 +39,10 @@ class TenantController extends Controller
         $status = (string) $request->input('subscription_status', '');
 
         $tenants = Tenant::query()
-            ->withCount(['users', 'courses'])
+            ->withCount([
+                'users as teachers_count' => fn ($query) => $query->where('role', UserRole::Teacher),
+                'courses',
+            ])
             ->when(filled($search), function ($query) use ($search) {
                 $query->where(function ($builder) use ($search) {
                     $builder
@@ -55,7 +59,7 @@ class TenantController extends Controller
                 'name' => $tenant->name,
                 'slug' => $tenant->slug,
                 'subscription_status' => $tenant->subscription_status,
-                'users_count' => $tenant->users_count,
+                'users_count' => $tenant->teachers_count,
                 'courses_count' => $tenant->courses_count,
             ]);
 

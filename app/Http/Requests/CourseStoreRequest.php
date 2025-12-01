@@ -36,7 +36,6 @@ class CourseStoreRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'image', 'max:2048'],
-            'price' => ['nullable', 'numeric', 'min:0'],
             'tenant_id' => $tenantRule,
             'teacher_id' => $teacherRule,
             'category_id' => ['nullable', 'uuid', 'exists:categories,id'],

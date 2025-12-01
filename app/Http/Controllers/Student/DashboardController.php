@@ -35,6 +35,7 @@ class DashboardController extends Controller
                         'id' => $enrollment->course?->id,
                         'title' => $enrollment->course?->title,
                         'level' => $enrollment->course?->level,
+                        'slug' => $enrollment->course?->slug,
                     ],
                     'progress' => $progress,
                 ];
