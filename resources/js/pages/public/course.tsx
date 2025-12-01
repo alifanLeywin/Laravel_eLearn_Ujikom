@@ -119,14 +119,15 @@ export default function PublicCourse({
 
     return (
         <PublicLayout>
-            <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-orange-50 text-[#3a1b14] transition-colors duration-300 dark:from-[#0b1021] dark:via-slate-900 dark:to-slate-950 dark:text-orange-50">
+            <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-orange-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
                 <Head title={course.title} />
+                
                 
                 {/* Back Link */}
                 <div className="mx-auto max-w-7xl px-6 pt-8">
                     <Link
                         href="/"
-                        className="inline-flex items-center gap-2 font-serif text-sm text-gray-600 hover:text-rose-600 dark:text-orange-200 dark:hover:text-orange-100"
+                        className="inline-flex items-center gap-2 font-serif text-sm text-gray-600 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400"
                     >
                         <ArrowLeft className="size-4" />
                         go back
@@ -154,20 +155,20 @@ export default function PublicCourse({
                         {/* Right Column - Content */}
                         <div className="space-y-8">
                             <div className="space-y-4">
-                                <h1 className="font-serif text-5xl font-light leading-tight text-rose-600 lg:text-6xl">
+                                <h1 className="font-serif text-5xl font-light leading-tight text-rose-600 dark:text-rose-400 lg:text-6xl">
                                     {course.title}
                                 </h1>
-                                <p className="font-serif text-lg leading-relaxed text-gray-700">
+                                <p className="font-serif text-lg leading-relaxed text-gray-700 dark:text-slate-300">
                                     {course.description || 'Tidak ada deskripsi. Course ini siap digunakan untuk pembelajaran.'}
                                 </p>
                             </div>
 
                             {/* Course Meta */}
-                            <div className="space-y-4 border-t border-rose-200 pt-6">
-                                <div className="font-serif text-sm uppercase tracking-widest text-rose-600">
+                            <div className="space-y-4 border-t border-rose-200 pt-6 dark:border-slate-700">
+                                <div className="font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                     Enrollment
                                 </div>
-                                <div className="space-y-2 text-sm text-gray-700">
+                                <div className="space-y-2 text-sm text-gray-700 dark:text-slate-300">
                                     <div className="flex justify-between">
                                         <span className="font-semibold">Status</span>
                                         <span>{course.status}</span>
@@ -180,14 +181,14 @@ export default function PublicCourse({
                             </div>
 
                             {/* Teacher Info */}
-                            <div className="space-y-2 border-t border-rose-200 pt-6">
-                                <div className="font-serif text-sm uppercase tracking-widest text-rose-600">
+                            <div className="space-y-2 border-t border-rose-200 pt-6 dark:border-slate-700">
+                                <div className="font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                     TEACHER
                                 </div>
-                                <div className="text-gray-700">
+                                <div className="text-gray-700 dark:text-slate-300">
                                     <Link 
                                         href={course.teacher_slug ? `/teachers/${course.teacher_slug}` : '#'}
-                                        className="hover:text-rose-600"
+                                        className="hover:text-rose-600 dark:hover:text-rose-400"
                                     >
                                         {course.teacher ?? 'TBD'}
                                     </Link>
@@ -195,18 +196,18 @@ export default function PublicCourse({
                             </div>
 
                             {/* Course Stats */}
-                            <div className="grid grid-cols-2 gap-4 border-t border-rose-200 pt-6">
+                            <div className="grid grid-cols-2 gap-4 border-t border-rose-200 pt-6 dark:border-slate-700">
                                 <div>
-                                    <div className="font-serif text-xs uppercase tracking-widest text-rose-600">
+                                    <div className="font-serif text-xs uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                         Modules
                                     </div>
-                                    <div className="text-3xl font-light text-gray-900">{course.modules_count}</div>
+                                    <div className="text-3xl font-light text-gray-900 dark:text-white">{course.modules_count}</div>
                                 </div>
                                 <div>
-                                    <div className="font-serif text-xs uppercase tracking-widest text-rose-600">
+                                    <div className="font-serif text-xs uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                         Lessons
                                     </div>
-                                    <div className="text-3xl font-light text-gray-900">{course.lessons_count}</div>
+                                    <div className="text-3xl font-light text-gray-900 dark:text-white">{course.lessons_count}</div>
                                 </div>
                             </div>
 
@@ -216,13 +217,13 @@ export default function PublicCourse({
                                     type="button"
                                     onClick={enroll}
                                     disabled={!!enrollment}
-                                    className="w-full rounded-sm border-2 border-rose-600 bg-transparent px-8 py-4 font-serif text-sm uppercase tracking-widest text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:border-gray-300 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+                                    className="w-full rounded-sm border-2 border-rose-600 bg-transparent px-8 py-4 font-serif text-sm uppercase tracking-widest text-rose-600 transition hover:bg-rose-600 hover:text-white disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400 dark:border-rose-500 dark:text-rose-400 dark:hover:bg-rose-500 dark:hover:text-white dark:disabled:border-slate-700 dark:disabled:text-slate-600"
                                 >
                                     {enrollment ? `ENROLLED (${enrollment.status})` : 'RESERVE →'}
                                 </button>
                                 {!auth.user && (
-                                    <p className="mt-4 text-center text-xs text-gray-600">
-                                        <Link href={login()} className="underline hover:text-rose-600">
+                                    <p className="mt-4 text-center text-xs text-gray-600 dark:text-slate-400">
+                                        <Link href={login()} className="underline hover:text-rose-600 dark:hover:text-rose-400">
                                             Log in
                                         </Link>{' '}
                                         to enroll in this course
@@ -235,27 +236,27 @@ export default function PublicCourse({
 
                 {/* Description Section with Toggle */}
                 <div className="mx-auto max-w-7xl px-6 py-16">
-                    <div className="border-t-2 border-rose-600 pt-8">
+                    <div className="border-t-2 border-rose-600 pt-8 dark:border-rose-500">
                         <button
                             onClick={() => setShowDescription(!showDescription)}
                             className="flex w-full items-center justify-between pb-8"
                         >
-                            <h2 className="font-serif text-4xl font-light text-gray-900">Course Details</h2>
-                            <span className="text-3xl text-rose-600">{showDescription ? '×' : '+'}</span>
+                            <h2 className="font-serif text-4xl font-light text-gray-900 dark:text-white">Course Details</h2>
+                            <span className="text-3xl text-rose-600 dark:text-rose-400">{showDescription ? '×' : '+'}</span>
                         </button>
                         
                         {showDescription && (
                             <div className="space-y-6 pb-8">
                                 <div className="space-y-4">
-                                    <h3 className="font-serif text-2xl font-light text-gray-900">About This Course</h3>
-                                    <p className="leading-relaxed text-gray-700">
+                                    <h3 className="font-serif text-2xl font-light text-gray-900 dark:text-white">About This Course</h3>
+                                    <p className="leading-relaxed text-gray-700 dark:text-slate-300">
                                         {course.description || 'Tidak ada deskripsi. Course ini siap digunakan untuk pembelajaran.'}
                                     </p>
                                 </div>
 
-                                <div className="border-t-2 border-rose-600 pt-6">
-                                    <h3 className="font-serif text-2xl font-light text-gray-900">Category</h3>
-                                    <p className="mt-2 text-gray-700">{course.category ?? 'General'}</p>
+                                <div className="border-t-2 border-rose-600 pt-6 dark:border-rose-500">
+                                    <h3 className="font-serif text-2xl font-light text-gray-900 dark:text-white">Category</h3>
+                                    <p className="mt-2 text-gray-700 dark:text-slate-300">{course.category ?? 'General'}</p>
                                 </div>
                             </div>
                         )}
@@ -264,18 +265,18 @@ export default function PublicCourse({
 
                 {/* Comments Section */}
                 {isEnrolled && (
-                    <div className="border-t border-rose-200 bg-white py-16">
+                    <div className="border-t border-rose-200 bg-white py-16 dark:border-slate-800 dark:bg-slate-900">
                         <div className="mx-auto max-w-7xl px-6">
                             <div className="space-y-8">
-                                <h2 className="font-serif text-3xl font-light text-gray-900">
-                                    <Sparkles className="mb-1 mr-2 inline size-5 text-rose-600" />
+                                <h2 className="font-serif text-3xl font-light text-gray-900 dark:text-white">
+                                    <Sparkles className="mb-1 mr-2 inline size-5 text-rose-600 dark:text-rose-400" />
                                     Comments
                                 </h2>
 
                                 {/* Comment Form */}
                                 <div className="space-y-4">
                                     <textarea
-                                        className="w-full rounded-sm border border-rose-200 p-4 text-gray-900 placeholder:text-gray-400 focus:border-rose-600 focus:outline-none"
+                                        className="w-full rounded-sm border border-rose-200 bg-white p-4 text-gray-900 placeholder:text-gray-400 focus:border-rose-600 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-rose-500"
                                         rows={4}
                                         placeholder="Share your thoughts as an enrolled student..."
                                         value={body}
@@ -286,7 +287,7 @@ export default function PublicCourse({
                                             <button
                                                 type="button"
                                                 onClick={cancelEdit}
-                                                className="rounded-sm border border-gray-300 px-6 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                                className="rounded-sm border border-gray-300 px-6 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                                             >
                                                 Cancel
                                             </button>
@@ -294,7 +295,7 @@ export default function PublicCourse({
                                         <button
                                             type="button"
                                             onClick={(e) => submitComment(e as any)}
-                                            className="rounded-sm border-2 border-rose-600 bg-rose-600 px-6 py-2 text-sm font-semibold text-white hover:bg-rose-700"
+                                            className="rounded-sm border-2 border-rose-600 bg-rose-600 px-6 py-2 text-sm font-semibold text-white hover:bg-rose-700 dark:border-rose-500 dark:bg-rose-500 dark:hover:bg-rose-600"
                                         >
                                             {editingId ? 'Update' : 'Submit'}
                                         </button>
@@ -304,25 +305,25 @@ export default function PublicCourse({
                                 {/* Comments List */}
                                 <div className="space-y-6">
                                     {comments.map((comment) => (
-                                        <div key={comment.id} className="border-l-2 border-rose-600 pl-6">
+                                        <div key={comment.id} className="border-l-2 border-rose-600 pl-6 dark:border-rose-500">
                                             <div className="mb-2 flex items-center justify-between text-sm">
-                                                <span className="font-semibold text-gray-900">{comment.user ?? 'Student'}</span>
-                                                <span className="text-gray-500">{comment.created_at ?? ''}</span>
+                                                <span className="font-semibold text-gray-900 dark:text-white">{comment.user ?? 'Student'}</span>
+                                                <span className="text-gray-500 dark:text-slate-400">{comment.created_at ?? ''}</span>
                                             </div>
-                                            <p className="mb-3 text-gray-700">{comment.body}</p>
+                                            <p className="mb-3 text-gray-700 dark:text-slate-300">{comment.body}</p>
                                             {comment.can_edit && (
                                                 <div className="flex gap-4 text-xs">
                                                     <button
                                                         type="button"
                                                         onClick={() => startEdit(comment)}
-                                                        className="text-rose-600 hover:underline"
+                                                        className="text-rose-600 hover:underline dark:text-rose-400"
                                                     >
                                                         Edit
                                                     </button>
                                                     <button
                                                         type="button"
                                                         onClick={() => deleteComment(comment.id)}
-                                                        className="text-red-500 hover:underline"
+                                                        className="text-red-500 hover:underline dark:text-red-400"
                                                     >
                                                         Delete
                                                     </button>
@@ -331,7 +332,7 @@ export default function PublicCourse({
                                         </div>
                                     ))}
                                     {comments.length === 0 && (
-                                        <div className="rounded-sm border border-dashed border-rose-300 p-8 text-center text-sm text-gray-600">
+                                        <div className="rounded-sm border border-dashed border-rose-300 p-8 text-center text-sm text-gray-600 dark:border-slate-700 dark:text-slate-400">
                                             No comments yet. Be the first to share your thoughts!
                                         </div>
                                     )}
@@ -343,9 +344,9 @@ export default function PublicCourse({
 
                 {/* Related Courses */}
                 {related_courses && related_courses.length > 0 && (
-                    <div className="border-t border-rose-200 py-16">
+                    <div className="border-t border-rose-200 py-16 dark:border-slate-800">
                         <div className="mx-auto max-w-7xl px-6">
-                            <div className="mb-8 font-serif text-sm uppercase tracking-widest text-rose-600">
+                            <div className="mb-8 font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                 You may be interested in them
                             </div>
                             <div className="grid gap-8 md:grid-cols-3">
@@ -369,17 +370,17 @@ export default function PublicCourse({
                                             </div>
                                         )}
                                         <div className="space-y-2">
-                                            <p className="text-xs uppercase tracking-[0.15em] text-rose-600">
+                                            <p className="text-xs uppercase tracking-[0.15em] text-rose-600 dark:text-rose-400">
                                                 {item.category ?? 'General'}
                                             </p>
-                                            <h3 className="font-serif text-2xl font-light text-gray-900 transition group-hover:text-rose-600">
+                                            <h3 className="font-serif text-2xl font-light text-gray-900 transition group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400">
                                                 {item.title}
                                             </h3>
-                                            <p className="text-sm text-gray-600">
+                                            <p className="text-sm text-gray-600 dark:text-slate-400">
                                                 {item.teacher ?? 'Instruktur TBD'} · {item.level ?? 'All levels'}
                                             </p>
                                             <div className="pt-2">
-                                                <span className="font-serif text-sm uppercase tracking-widest text-rose-600">
+                                                <span className="font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                                     READ MORE →
                                                 </span>
                                             </div>

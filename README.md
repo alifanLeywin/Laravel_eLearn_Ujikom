@@ -197,11 +197,11 @@ erDiagram
 ## 🎭 UML Use Case (Role Responsibilities)
 ```mermaid
 usecaseDiagram
-    actor "Super Admin" as SA
-    actor "Admin" as AD
-    actor "Teacher" as TE
-    actor "Student" as ST
-    actor "Guest" as GU
+    actor SA as "Super Admin"
+    actor AD as "Admin"
+    actor TE as "Teacher"
+    actor ST as "Student"
+    actor GU as "Guest"
 
     SA --> (Kelola tenant)
     SA --> (Kelola admin/teacher)

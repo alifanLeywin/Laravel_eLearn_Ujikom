@@ -1,6 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 
 type Course = {
@@ -34,10 +34,7 @@ export default function PublicCoursesIndex({
         search: filters.search ?? '',
         category_id: filters.category_id ?? '',
     });
-
-    const accent = 'text-[#e34724] dark:text-orange-300';
-    const accentBg = 'bg-[#e34724] dark:bg-orange-400';
-    const borderAccent = 'border-[#e34724] dark:border-orange-400';
+    const isFirstRender = useRef(true);
 
     const categoriesWithAll = useMemo(
         () => [{ id: '', name: 'All' }, ...categories],
@@ -45,36 +42,61 @@ export default function PublicCoursesIndex({
     );
 
     const applyFilters = (key: string, value: string) => {
-        const next = { ...localFilters, [key]: value };
-        setLocalFilters(next);
-        router.get('/courses', next, { preserveScroll: true, replace: true });
+        setLocalFilters((prev) => ({ ...prev, [key]: value }));
     };
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        const handle = setTimeout(() => {
+            router.get('/courses', localFilters, {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+            });
+        }, 250);
+
+        return () => clearTimeout(handle);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [localFilters.search, localFilters.category_id]);
 
     return (
         <PublicLayout>
             <Head title="Courses" />
-            <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-rose-50 px-4 pb-16 pt-10 text-[#3a1b14] dark:from-[#0b1021] dark:via-slate-900 dark:to-slate-950 dark:text-white md:px-10">
-                <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:flex-row">
-                    <aside className="w-full max-w-xs space-y-8">
-                        <div className="space-y-2">
-                            <p className={`${accent} text-3xl font-semibold`}>Regular</p>
-                            <p className={`${accent} text-3xl font-semibold`}>courses</p>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+            <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-orange-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+
+                {/* Main Content */}
+                <div className="mx-auto max-w-7xl px-6 py-16">
+                    <div className="flex flex-col gap-12 lg:flex-row">
+                        {/* Sidebar Filters */}
+                        <aside className="w-full space-y-8 lg:w-80">
+                            <div className="space-y-2">
+                                <h1 className="font-serif text-5xl font-light leading-tight text-rose-600 dark:text-rose-400">
+                                    Regular
+                                </h1>
+                                <h2 className="font-serif text-5xl font-light leading-tight text-rose-600 dark:text-rose-400">
+                                    courses
+                                </h2>
+                            </div>
+
+                            {/* Category Filter */}
+                            <div className="space-y-4">
+                                <label className="block font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                     Specialty
                                 </label>
-                                <div className="mt-3 flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-2">
                                     {categoriesWithAll.map((category) => (
                                         <button
                                             key={category.id}
                                             type="button"
                                             onClick={() => applyFilters('category_id', category.id)}
-                                            className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                                            className={`rounded-full border-2 px-4 py-2 font-serif text-xs uppercase tracking-wide transition ${
                                                 localFilters.category_id === category.id
-                                                    ? `${accentBg} border-transparent text-white dark:text-[#0b1021]`
-                                                    : `${borderAccent} text-[#e34724] dark:text-orange-200 hover:bg-[#e3472410] dark:hover:bg-orange-500/10`
+                                                    ? 'border-rose-600 bg-rose-600 text-white dark:border-rose-500 dark:bg-rose-500'
+                                                    : 'border-rose-600 bg-transparent text-rose-600 hover:bg-rose-600 hover:text-white dark:border-rose-500 dark:text-rose-400 dark:hover:bg-rose-500 dark:hover:text-white'
                                             }`}
                                         >
                                             {category.name}
@@ -82,88 +104,98 @@ export default function PublicCoursesIndex({
                                     ))}
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+
+                            {/* Search Filter */}
+                            <div className="space-y-4">
+                                <label className="block font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
                                     Search
                                 </label>
                                 <div className="relative">
-                                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#e34724]" />
+                                    <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-rose-400 dark:text-rose-500" />
                                     <input
                                         value={localFilters.search}
                                         onChange={(event) => applyFilters('search', event.target.value)}
                                         placeholder="Cari judul/deskripsi"
-                                        className="w-full rounded-full border border-[#e34724] bg-transparent px-10 py-2 text-sm text-[#3a1b14] placeholder:text-[#e3472470] focus:border-[#e34724] focus:outline-none dark:border-orange-400 dark:text-white dark:placeholder:text-orange-200/70 dark:focus:border-orange-300"
+                                        className="w-full rounded-full border-2 border-rose-600 bg-white py-3 pl-12 pr-4 text-sm text-gray-900 placeholder:text-rose-300 focus:border-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-200 dark:border-rose-500 dark:bg-slate-900 dark:text-white dark:placeholder:text-rose-500/50 dark:focus:border-rose-400 dark:focus:ring-rose-900"
                                     />
                                 </div>
                             </div>
-                        </div>
-                    </aside>
+                        </aside>
 
-                    <section className="flex-1 space-y-8">
-                        <div className="rounded-2xl border border-[#e3472420] bg-white/80 p-6 shadow-sm dark:border-orange-400/30 dark:bg-white/5">
-                            <p className={`${accent} text-lg font-semibold`}>
-                                Regular courses taught at our academy. Semua kelas sedang berjalan dan siap
-                                kamu ikuti.
-                            </p>
-                        </div>
+                        {/* Courses Grid */}
+                        <section className="flex-1 space-y-10">
+                            {/* Info Banner */}
+                            <div className="rounded-lg border border-rose-200 bg-white p-6 shadow-sm dark:border-rose-900/50 dark:bg-slate-900">
+                                <p className="font-serif text-lg leading-relaxed text-rose-600 dark:text-rose-400">
+                                    Regular courses taught at our academy. Semua kelas sedang berjalan dan siap kamu ikuti.
+                                </p>
+                            </div>
 
-                        <div className="grid gap-10 md:grid-cols-2">
-                            {courses.map((course) => (
-                                <article
-                                    key={course.id}
-                                    className="space-y-3 border-t-4 border-[#e34724] pt-4 dark:border-orange-300"
-                                >
-                                    <div className="flex items-start justify-between gap-3">
-                                        <Link
-                                            href={`/courses/${course.slug}`}
-                                            className="text-2xl font-semibold text-[#e34724] hover:text-[#b8321b] dark:text-orange-200 dark:hover:text-white"
-                                        >
-                                            {course.title}
-                                        </Link>
-                                        <span className="text-xs uppercase tracking-[0.2em] text-[#a0331d]">
-                                            {course.status === 'published' ? 'Open' : 'Closed'}
-                                        </span>
-                                    </div>
-                                    {course.cover_image && (
-                                        <div className="overflow-hidden rounded-lg border border-[#e3472420] bg-[#f6e9e3] dark:border-orange-400/30 dark:bg-orange-500/10">
-                                            <img
-                                                src={
-                                                    course.cover_image.startsWith('http')
-                                                        ? course.cover_image
-                                                        : `/storage/${course.cover_image}`
-                                                }
-                                                alt={course.title}
-                                                className="h-48 w-full object-cover"
-                                            />
+                            {/* Courses Grid */}
+                            <div className="grid gap-8 md:grid-cols-2">
+                                {courses.map((course) => (
+                                    <article
+                                        key={course.id}
+                                        className="group space-y-4 border-t-4 border-rose-600 pt-4 dark:border-rose-500"
+                                    >
+                                        <div className="flex items-start justify-between gap-4">
+                                            <Link
+                                                href={`/courses/${course.slug}`}
+                                                className="font-serif text-2xl font-light text-rose-600 transition group-hover:text-rose-700 dark:text-rose-400 dark:group-hover:text-rose-300"
+                                            >
+                                                {course.title}
+                                            </Link>
+                                            <span className="shrink-0 rounded-sm bg-rose-100 px-3 py-1 font-serif text-xs uppercase tracking-wider text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
+                                                {course.status === 'published' ? 'Open' : 'Closed'}
+                                            </span>
                                         </div>
-                                    )}
-                                    <div className="flex items-center justify-between text-xs text-[#7a3322]">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="rounded-full border border-[#e34724] px-3 py-1 text-[11px] text-[#e34724] dark:border-orange-300 dark:text-orange-200">
+
+                                        {course.cover_image && (
+                                            <div className="overflow-hidden rounded-lg">
+                                                <img
+                                                    src={
+                                                        course.cover_image.startsWith('http')
+                                                            ? course.cover_image
+                                                            : `/storage/${course.cover_image}`
+                                                    }
+                                                    alt={course.title}
+                                                    className="h-48 w-full object-cover transition duration-300 group-hover:scale-105"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="flex flex-wrap items-center gap-3">
+                                            <span className="rounded-full border border-rose-600 px-3 py-1 text-xs text-rose-600 dark:border-rose-500 dark:text-rose-400">
                                                 {course.level ?? 'All levels'}
                                             </span>
-                                            <span className="text-[#7a3322] dark:text-orange-100">
-                                                {course.category ?? 'General'}
-                                            </span>
+                                            {course.category && (
+                                                <span className="text-sm text-gray-600 dark:text-slate-400">
+                                                    {course.category}
+                                                </span>
+                                            )}
                                         </div>
+
+                                        <div className="pt-2">
+                                            <Link
+                                                href={`/courses/${course.slug}`}
+                                                className="inline-flex items-center gap-2 font-serif text-sm text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                                            >
+                                                Read more →
+                                            </Link>
+                                        </div>
+                                    </article>
+                                ))}
+
+                                {courses.length === 0 && (
+                                    <div className="col-span-full rounded-lg border border-dashed border-rose-300 p-12 text-center dark:border-rose-800">
+                                        <p className="font-serif text-lg text-gray-600 dark:text-slate-400">
+                                            Tidak ada course yang cocok. Ubah filter atau coba lagi nanti.
+                                        </p>
                                     </div>
-                                    <div className="flex items-center gap-4 text-sm font-semibold text-[#e34724]">
-                                        <Link
-                                            href={`/courses/${course.slug}`}
-                                            className="hover:text-[#b8321b] dark:text-orange-200 dark:hover:text-white"
-                                        >
-                                            Read more →
-                                        </Link>
-                                    </div>
-                                </article>
-                            ))}
-                            {courses.length === 0 && (
-                                <div className="col-span-full rounded-xl border border-dashed border-[#e3472440] p-6 text-center text-sm text-[#7a3322] dark:border-orange-300/40 dark:text-orange-100">
-                                    Tidak ada course yang cocok. Ubah filter atau coba lagi nanti.
-                                </div>
-                            )}
-                        </div>
-                    </section>
+                                )}
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </div>
         </PublicLayout>

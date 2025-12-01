@@ -1,10 +1,3 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import PublicLayout from '@/layouts/public-layout';
@@ -12,7 +5,7 @@ import { dashboard, login, register } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, BookOpen, GraduationCap, Search } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 
 type Course = {
     id: string;
@@ -62,7 +55,7 @@ export default function PublicHome({
         if (auth.user) {
             return {
                 href: dashboard(),
-                label: 'Masuk dashboard',
+                label: 'Go to Dashboard',
             };
         }
 
@@ -74,167 +67,197 @@ export default function PublicHome({
 
     return (
         <PublicLayout>
-            <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 text-slate-900 transition-colors duration-300 dark:from-[#0b1021] dark:via-[#0b1021] dark:to-[#0f162e] dark:text-white">
+            <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-orange-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
                 <Head title="E-Learn" />
-                <header className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 pb-12 pt-10 md:flex-row md:items-center md:justify-between md:pt-14">
-                <div className="flex w-full items-center justify-end md:absolute md:right-6 md:top-6">
-                    <AppearanceToggleDropdown />
-                </div>
-                <div className="max-w-2xl space-y-4">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-black/5 px-3 py-1 text-xs font-semibold text-blue-900 ring-1 ring-black/10 dark:bg-white/5 dark:text-blue-100 dark:ring-white/10">
-                        <span className="flex size-5 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-200">
-                            <GraduationCap className="size-3.5" />
-                        </span>
-                        Enterprise-ready LMS blueprint
-                    </div>
-                    <h1 className="text-balance text-4xl font-semibold leading-tight text-slate-900 md:text-5xl dark:text-white">
-                        Bangun kurikulum yang rapi, multi-tenant ready, dengan
-                        peran yang jelas.
-                    </h1>
-                    <p className="text-pretty text-base text-slate-700 dark:text-blue-100/80">
-                        Jelajahi course, kelola tenant sekolah, dan buat kelas
-                        interaktif dengan quiz, assignment, dan progress
-                        tracking real-time.
-                    </p>
-                    <div className="flex flex-wrap gap-3">
-                        <Link
-                            href={heroCta.href}
-                            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-black hover:shadow-blue-500/30 dark:bg-white dark:text-[#0b1021] dark:hover:bg-white/90"
-                        >
-                            {heroCta.label}
-                            <ArrowRight className="size-4" />
-                        </Link>
-                        {canRegister && !auth.user && (
-                            <Link
-                                href={register()}
-                                className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900 ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-slate-100 dark:bg-white/10 dark:text-white dark:ring-white/20 dark:hover:bg-white/15"
-                            >
-                                Daftar sebagai student
-                            </Link>
-                        )}
-                    </div>
-                </div>
-                <div className="relative w-full max-w-md">
-                    <div className="absolute inset-0 blur-3xl">
-                        <div className="h-full w-full rounded-full bg-gradient-to-br from-blue-300/30 via-pink-200/20 to-indigo-200/30 dark:from-blue-500/20 dark:via-fuchsia-400/10 dark:to-indigo-400/20" />
-                    </div>
-                    <div className="relative rounded-2xl bg-white/80 p-6 ring-1 ring-slate-200 backdrop-blur dark:bg-white/5 dark:ring-white/10">
-                        <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-200">
-                                <BookOpen className="size-5" />
+                
+
+                {/* Hero Section */}
+                <header className="mx-auto max-w-7xl px-6 py-20">
+                    <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+                        {/* Left Column - Text */}
+                        <div className="space-y-8">
+                            <div className="space-y-6">
+                                <div className="inline-block rounded-sm bg-rose-100 px-4 py-2 dark:bg-rose-900/30">
+                                    <span className="font-serif text-xs uppercase tracking-widest text-rose-700 dark:text-rose-400">
+                                        Enterprise-ready LMS
+                                    </span>
+                                </div>
+                                <h1 className="font-serif text-6xl font-light leading-tight text-gray-900 dark:text-white lg:text-7xl">
+                                    Bangun kurikulum yang rapi
+                                </h1>
+                                <p className="font-serif text-xl leading-relaxed text-gray-700 dark:text-slate-300">
+                                    Jelajahi course, kelola tenant sekolah, dan buat kelas interaktif dengan quiz, assignment, dan progress tracking real-time.
+                                </p>
                             </div>
-                            <div>
-                                <p className="text-sm text-slate-600 dark:text-blue-100/70">
-                                    Fokus pada kurikulum
-                                </p>
-                                <p className="text-lg font-semibold text-slate-900 dark:text-white">
-                                    Course builder terstruktur
-                                </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <Link
+                                    href={heroCta.href}
+                                    className="inline-flex items-center gap-2 rounded-sm border-2 border-rose-600 bg-rose-600 px-8 py-4 font-serif text-sm uppercase tracking-widest text-white transition hover:bg-rose-700 dark:border-rose-500 dark:bg-rose-500 dark:hover:bg-rose-600"
+                                >
+                                    {heroCta.label}
+                                    <ArrowRight className="size-4" />
+                                </Link>
+                                {canRegister && !auth.user && (
+                                    <Link
+                                        href={register()}
+                                        className="inline-flex items-center gap-2 rounded-sm border-2 border-rose-600 bg-transparent px-8 py-4 font-serif text-sm uppercase tracking-widest text-rose-600 transition hover:bg-rose-600 hover:text-white dark:border-rose-500 dark:text-rose-400 dark:hover:bg-rose-500 dark:hover:text-white"
+                                    >
+                                        Register
+                                    </Link>
+                                )}
                             </div>
                         </div>
-                        <p className="mt-3 text-sm text-slate-700 dark:text-blue-100/80">
-                            Hierarki Course → Module → Lesson dengan assessment
-                            dan attachment bawaan.
-                        </p>
+
+                        {/* Right Column - Image */}
+                        <div className="relative">
+                            <div className="overflow-hidden rounded-sm">
+                                <img
+                                    src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80"
+                                    alt="Students learning"
+                                    className="h-[600px] w-full object-cover"
+                                />
+                            </div>
+                            <div className="absolute -bottom-8 -left-8 rounded-sm bg-white p-6 shadow-lg dark:bg-slate-900 dark:shadow-slate-950">
+                                <div className="space-y-2">
+                                    <div className="font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
+                                        Course Builder
+                                    </div>
+                                    <p className="text-2xl font-light text-gray-900 dark:text-white">Terstruktur</p>
+                                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                                        Hierarki Course → Module → Lesson
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
                 </header>
 
-                <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pb-16">
-                <section className="rounded-2xl border border-slate-200 bg-white/80 p-5 backdrop-blur dark:border-white/10 dark:bg-white/5">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <p className="text-sm text-slate-600 dark:text-blue-100/70">
-                                Jelajahi course
-                            </p>
-                            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-                                Cari materi yang kamu butuhkan
-                            </h2>
+                {/* Search Section */}
+                <section className="border-t-2 border-rose-600 bg-white py-16 dark:border-rose-500 dark:bg-slate-900">
+                    <div className="mx-auto max-w-7xl px-6">
+                        <div className="mb-12 grid gap-8 lg:grid-cols-2 lg:items-center">
+                            <div className="space-y-4">
+                                <h2 className="font-serif text-4xl font-light text-gray-900 dark:text-white">
+                                    Explore Our Courses
+                                </h2>
+                                <p className="font-serif text-lg text-gray-700 dark:text-slate-300">
+                                    Cari materi yang kamu butuhkan dari berbagai kategori
+                                </p>
+                            </div>
+                            <div className="relative">
+                                <Search className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
+                                <Input
+                                    value={search}
+                                    onChange={(event) => setSearch(event.target.value)}
+                                    placeholder="Search courses..."
+                                    className="w-full rounded-sm border-2 border-gray-200 bg-white py-6 pl-12 font-serif text-gray-900 placeholder:text-gray-400 focus:border-rose-600 focus:outline-none focus:ring-0 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-rose-500"
+                                />
+                            </div>
                         </div>
-                        <div className="relative w-full max-w-md">
-                            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400 dark:text-blue-100/60" />
-                            <Input
-                                value={search}
-                                onChange={(event) => setSearch(event.target.value)}
-                                placeholder="Cari judul atau deskripsi course"
-                                className="w-full rounded-full border-slate-200 bg-white pl-10 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-300/60 focus:ring-2 focus:ring-blue-500/40 dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-blue-100/60"
-                            />
-                        </div>
-                    </div>
 
-                    <div className="mt-4 flex flex-wrap gap-2">
-                        {categories.map((category) => (
-                            <span
-                                key={category.id}
-                                className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15"
-                            >
-                                {category.name}
-                            </span>
-                        ))}
+                        {/* Categories */}
+                        <div className="mb-8 flex flex-wrap gap-3">
+                            {categories.map((category) => (
+                                <button
+                                    key={category.id}
+                                    className="rounded-sm border border-rose-600 bg-transparent px-4 py-2 font-serif text-xs uppercase tracking-widest text-rose-600 transition hover:bg-rose-600 hover:text-white dark:border-rose-500 dark:text-rose-400 dark:hover:bg-rose-500 dark:hover:text-white"
+                                >
+                                    {category.name}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </section>
 
-                <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {courses.map((course) => (
-                        <Card
-                            key={course.id}
-                            className="border-slate-200 bg-white/90 text-slate-900 ring-1 ring-slate-200 backdrop-blur transition hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:ring-white/10"
-                        >
-                            {course.cover_image && (
-                                <div className="h-40 w-full overflow-hidden rounded-t-xl border-b border-slate-100 bg-slate-100 dark:border-white/10 dark:bg-white/5">
+                {/* Courses Grid */}
+                <main className="mx-auto max-w-7xl px-6 py-16">
+                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                        {courses.map((course) => (
+                            <Link
+                                key={course.id}
+                                href={`/courses/${course.slug}`}
+                                className="group block space-y-4"
+                            >
+                                {/* Course Image */}
+                                <div className="overflow-hidden rounded-sm">
                                     <img
-                                        src={course.cover_image.startsWith('http') ? course.cover_image : `/storage/${course.cover_image}`}
+                                        src={
+                                            course.cover_image
+                                                ? course.cover_image.startsWith('http')
+                                                    ? course.cover_image
+                                                    : `/storage/${course.cover_image}`
+                                                : 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80'
+                                        }
                                         alt={course.title}
-                                        className="h-full w-full object-cover"
+                                        className="h-64 w-full object-cover transition duration-300 group-hover:scale-105"
                                     />
                                 </div>
-                            )}
-                            <CardHeader className={course.cover_image ? 'pb-3' : undefined}>
-                                <CardTitle className="text-lg">
-                                    {course.title}
-                                </CardTitle>
-                                <CardDescription className="text-slate-600 dark:text-blue-100/70">
-                                    {course.category ?? 'General'}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                <p className="line-clamp-3 text-sm text-slate-700 dark:text-blue-100/80">
-                                    {course.description ??
-                                        'Materi terkurasi dengan quiz, assignment, dan progress tracking.'}
-                                </p>
-                                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
-                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
-                                        {course.status}
-                                    </span>
-                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
-                                        {course.level ?? 'All levels'}
-                                    </span>
+
+                                {/* Course Info */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="rounded-sm bg-rose-100 px-3 py-1 font-serif text-xs uppercase tracking-wider text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
+                                            {course.category ?? 'General'}
+                                        </span>
+                                        <span className="rounded-sm bg-gray-100 px-3 py-1 font-serif text-xs uppercase tracking-wider text-gray-700 dark:bg-slate-800 dark:text-slate-400">
+                                            {course.status}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="font-serif text-2xl font-light text-gray-900 transition group-hover:text-rose-600 dark:text-white dark:group-hover:text-rose-400">
+                                        {course.title}
+                                    </h3>
+
+                                    <p className="line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-slate-400">
+                                        {course.description ?? 'Materi terkurasi dengan quiz, assignment, dan progress tracking.'}
+                                    </p>
+
+                                    <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-sm text-gray-600 dark:border-slate-700 dark:text-slate-400">
+                                        <span>{course.teacher ?? 'Instructor TBD'}</span>
+                                        <span>{course.level ?? 'All levels'}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <span className="font-serif text-lg font-light text-gray-900 dark:text-white">
+                                            {course.price ? `Rp ${course.price}` : 'FREE'}
+                                        </span>
+                                        <span className="font-serif text-sm uppercase tracking-widest text-rose-600 dark:text-rose-400">
+                                            View Details →
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
-                                    <span>{course.teacher ?? 'Instructor TBD'}</span>
-                                    <span className="text-xs text-slate-700 dark:text-blue-100/70">
-                                        {course.price ? `Rp ${course.price}` : 'Gratis'}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <Link
-                                        href={`/courses/${course.slug}`}
-                                        className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 dark:text-emerald-200 dark:hover:text-white"
-                                    >
-                                        Lihat detail →
-                                    </Link>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                            </Link>
+                        ))}
+                    </div>
+
                     {courses.length === 0 && (
-                        <div className="col-span-full rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-600 dark:border-white/20 dark:text-blue-100/70">
-                            Tidak ada course yang cocok. Coba ubah kata kunci
-                            atau cek kembali nanti.
+                        <div className="rounded-sm border border-dashed border-gray-300 p-12 text-center dark:border-slate-700">
+                            <p className="font-serif text-lg text-gray-600 dark:text-slate-400">
+                                Tidak ada course yang cocok. Coba ubah kata kunci atau cek kembali nanti.
+                            </p>
                         </div>
                     )}
-                </section>
                 </main>
+
+                {/* Footer CTA */}
+                <section className="border-t-2 border-rose-600 bg-gradient-to-b from-white to-rose-50 py-20 dark:border-rose-500 dark:from-slate-900 dark:to-slate-950">
+                    <div className="mx-auto max-w-4xl px-6 text-center">
+                        <h2 className="mb-6 font-serif text-5xl font-light text-gray-900 dark:text-white">
+                            Ready to Start Learning?
+                        </h2>
+                        <p className="mb-8 font-serif text-xl text-gray-700 dark:text-slate-300">
+                            Join thousands of students already learning with us
+                        </p>
+                        <Link
+                            href={heroCta.href}
+                            className="inline-flex items-center gap-2 rounded-sm border-2 border-rose-600 bg-rose-600 px-8 py-4 font-serif text-sm uppercase tracking-widest text-white transition hover:bg-rose-700 dark:border-rose-500 dark:bg-rose-500 dark:hover:bg-rose-600"
+                        >
+                            Get Started Now
+                            <ArrowRight className="size-4" />
+                        </Link>
+                    </div>
+                </section>
             </div>
         </PublicLayout>
     );
