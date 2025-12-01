@@ -1,6 +1,6 @@
 # eLearn LMS (Laravel 12 + Inertia React)
 
-Multi-tenant LMS with roles for Super Admin, Admin, Teacher, and Student. Supports course hierarchy (Course → Module → Lesson), quizzes, assignments with submissions, enrollments, progress tracking, public catalog, and themed public pages.
+Multi-tenant LMS with roles for Super Admin, Admin, Teacher, and Student. Supports course hierarchy (Course → Module → Lesson), quizzes, assignments with submissions, enrollments, progress tracking, public catalog, and themed public pages..
 
 ## 🚀 Getting Started
 ```bash
