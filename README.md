@@ -1,8 +1,8 @@
 # eLearn LMS (Laravel 12 + Inertia React)
 
-Multi-tenant LMS with roles for Super Admin, Admin, Teacher, and Student. Supports course hierarchy (Course → Module → Lesson), quizzes, assignments with submissions, enrollments, progress tracking, public catalog, and themed public pages..
+Platform LMS multi-tenant dengan peran Super Admin, Admin, Teacher, dan Student. Mendukung hierarki Course → Module → Lesson, quiz, assignment dengan submission, enrollment, pelacakan progres, katalog publik, serta tampilan publik bertema light/dark.
 
-## 🚀 Getting Started
+## 🚀 Mulai Cepat
 ```bash
 git clone https://github.com/alifanLeywin/Laravel_eLearn_Ujikom.git
 cd Laravel_eLearn_Ujikom
@@ -12,23 +12,22 @@ composer install
 npm install
 
 php artisan key:generate
-php artisan migrate --seed      # seeds sample tenants/courses/teachers/students
+php artisan migrate --seed      # seed sample tenant/teacher/student/course
 php artisan storage:link
 
-npm run dev   # or npm run build
+npm run dev   # atau npm run build
 php artisan serve
 ```
+App jalan di http://localhost:8000
 
-App runs at http://localhost:8000
-
-## 🛠 Tech Stack
+## 🛠️ Teknologi
 - PHP 8.4, Laravel 12
 - Inertia v2 + React 19 + TypeScript
 - Tailwind CSS v4, Vite
 - MySQL (default), PHPUnit 11
-- Roles: super_admin, admin, teacher, student
+- Role: super_admin, admin, teacher, student
 
-## 📊 ERD (Complete)
+## 📊 ERD (lengkap)
 ```mermaid
 erDiagram
     TENANTS ||--o{ USERS : has
@@ -194,7 +193,7 @@ erDiagram
     }
 ```
 
-## 🎭 UML Use Case (Role Responsibilities)
+## 🎭 UML Use Case (Peran)
 ```mermaid
 flowchart TD
     classDef actor fill:#fdf2f8,stroke:#fb7185,color:#9f1239,stroke-width:2px;
@@ -259,24 +258,30 @@ flowchart TD
     GU --> guAuth
 ```
 
-## ✨ Highlights
-- Public catalog & course detail with themed UI and related courses
-- Student: enroll, course player (video/text/quiz/assignment), undo/complete lesson, submissions download
-- Teacher: grading submissions, quiz authoring, analytics snapshot, student progress view
-- Admin/Super Admin: manage tenants, teachers, categories, courses; trash/restore courses
-- Custom 403/404, role-aware nav, dark/light theme toggle
+## ✨ Fitur Utama
+- Katalog publik & detail course bertema (dengan related courses)
+- Student: enroll, player course (video/text/quiz/assignment), undo/complete lesson, unduh submission
+- Teacher: penilaian submission, pembuatan quiz/soal, snapshot analytics, progress siswa
+- Admin/Super Admin: kelola tenant, teacher, kategori, course; trash/restore course
+- Halaman 403/404 kustom, navigasi sesuai role, toggle tema light/dark
 
-## 🔧 Common Commands
-- Dev server: `php artisan serve` + `npm run dev`
-- Build assets: `npm run build`
-- Lint/format: `vendor/bin/pint --dirty`
+## 👤 Akun Default (Seeder)
+- Super Admin: `superadmin@example.com` / `password`
+- Admin: `admin@example.com` / `password`
+- Teacher: `teacher@example.com` / `password`
+- Student: `student@example.com` / `password`
+
+## 🔧 Perintah Umum
+- Jalankan dev: `php artisan serve` + `npm run dev`
+- Build aset: `npm run build`
+- Format: `vendor/bin/pint --dirty`
 - Seed data: `php artisan db:seed`
-- Tests (sample): `php artisan test --filter=StudentCourseTest`
+- Contoh tes: `php artisan test --filter=StudentCourseTest`
 
-## 🗒️ Notes
-- Courses are free (no price column)
-- File uploads in `storage/app/public` (run `php artisan storage:link`)
-- Enrollment restricted to students; others get 403 with custom page
+## 🗒️ Catatan
+- Semua course gratis (kolom harga dihilangkan)
+- Upload file di `storage/app/public` (jalankan `php artisan storage:link`)
+- Enrollment hanya untuk student; role lain akan mendapat 403 kustom
 
-## 📄 License
+## 📄 Lisensi
 MIT
