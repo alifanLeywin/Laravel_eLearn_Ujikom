@@ -207,13 +207,12 @@ flowchart TD
     GU((Guest)):::actor
 
     saTenant[Kelola tenant]:::action
-    saStaff[Kelola admin/teacher]:::action
+    saStaff[Kelola teacher]:::action
     saCatalog[Kelola kategori & course]:::action
 
     adCat[Kelola kategori]:::action
     adTeacher[Kelola teacher]:::action
     adCourse[Kelola course]:::action
-    adAnalytics[Lihat analytics course]:::action
 
     teCourse[Kelola course pribadi]:::action
     teModule[Kelola module & lesson]:::action
@@ -240,7 +239,6 @@ flowchart TD
     AD --> adCat
     AD --> adTeacher
     AD --> adCourse
-    AD --> adAnalytics
 
     TE --> teCourse
     TE --> teModule
