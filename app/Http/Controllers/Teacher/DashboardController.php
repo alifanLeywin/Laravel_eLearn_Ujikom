@@ -33,6 +33,12 @@ class DashboardController extends Controller
                 'enrollments_count' => $course->enrollments_count,
             ]);
 
+        $totalEnrollments = Course::query()
+            ->where('teacher_id', $user->id)
+            ->withCount('enrollments')
+            ->get()
+            ->sum('enrollments_count');
+
         $lessons = Lesson::query()
             ->whereHas('module.course', fn ($query) => $query->where('teacher_id', $user->id))
             ->with('module.course:id,title')
@@ -50,6 +56,10 @@ class DashboardController extends Controller
         return Inertia::render('teacher/dashboard', [
             'courses' => $courses,
             'lessons' => $lessons,
+            'metrics' => [
+                'courses_count' => $courses->count(),
+                'enrollments_count' => $totalEnrollments,
+            ],
         ]);
     }
 }

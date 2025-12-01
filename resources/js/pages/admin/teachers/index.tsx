@@ -10,6 +10,7 @@ type Teacher = {
     tenant?: string | null;
     courses_count: number;
     created_at?: string | null;
+    slug?: string | null;
 };
 
 export default function TeachersIndex({ teachers }: { teachers: Teacher[] }) {
@@ -64,10 +65,16 @@ export default function TeachersIndex({ teachers }: { teachers: Teacher[] }) {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Link
-                                        href={`/teachers/${teacher.id}`}
+                                        href={`/teachers/${teacher.slug ?? teacher.id}`}
                                         className="text-foreground hover:underline"
                                     >
                                         View
+                                    </Link>
+                                    <Link
+                                        href={`/admin/teachers/${teacher.id}/edit`}
+                                        className="text-foreground hover:underline"
+                                    >
+                                        Edit
                                     </Link>
                                     <Button variant="outline" onClick={() => onDelete(teacher.id)}>
                                         Delete

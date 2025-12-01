@@ -2,7 +2,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { type SharedData } from '@/types';
 import { dashboard, login } from '@/routes';
 import { FormEvent, useMemo, useState } from 'react';
-import { ArrowLeft, ShoppingBag, User, Layers, BookOpen, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, User, Layers, BookOpen, ShieldCheck, Sparkles } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 
 type Course = {
@@ -35,14 +35,26 @@ type Comment = {
     can_edit: boolean;
 };
 
+type RelatedCourse = {
+    id: string;
+    slug: string;
+    title: string;
+    cover_image?: string | null;
+    level?: string | null;
+    teacher?: string | null;
+    category?: string | null;
+};
+
 export default function PublicCourse({
     course,
     enrollment,
     comments,
+    related_courses,
 }: {
     course: Course;
     enrollment: Enrollment;
     comments: Comment[];
+    related_courses: RelatedCourse[];
 }) {
     const { auth } = usePage<SharedData>().props;
     const [body, setBody] = useState('');
@@ -104,196 +116,243 @@ export default function PublicCourse({
         });
     };
 
-    const formatIDR = (value?: string | number | null) => {
-        if (!value) {
-            return 'Gratis';
-        }
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(Number(value));
-    };
-
     return (
         <PublicLayout>
-            <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-[#0b1021] dark:text-white">
+            <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-rose-50 text-[#3a1b14] transition-colors duration-300 dark:from-[#0b1021] dark:via-slate-900 dark:to-slate-950 dark:text-white">
                 <Head title={course.title} />
-                <header className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-10 pt-6 md:px-6 md:pt-10">
-                <div className="flex items-center justify-between text-sm text-slate-600 dark:text-blue-100/70">
-                    <div className="flex items-center gap-2">
+                <header className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pb-16 pt-8 md:px-6">
+                    <div className="flex items-center gap-3 text-sm text-[#b23a22] dark:text-orange-200">
                         <ArrowLeft className="size-4" />
                         <Link href="/" className="hover:underline">
-                            Kembali ke katalog
+                            Back to courses
                         </Link>
                     </div>
-                    <span className="text-xs text-slate-500 dark:text-blue-100/60">
-                        Pastikan data benar sebelum mendaftar.
-                    </span>
-                </div>
 
-                <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-                    <div className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
-                        <div className="overflow-hidden rounded-xl border border-slate-200/60 dark:border-white/10">
-                            <img
-                                src={
-                                    course.cover_image && course.cover_image.startsWith('http')
-                                        ? course.cover_image
+                    <div className="overflow-hidden rounded-3xl border border-[#e3472420] bg-white/80 shadow-lg dark:border-orange-400/20 dark:bg-white/5">
+                        <img
+                            src={
+                                course.cover_image && course.cover_image.startsWith('http')
+                                    ? course.cover_image
                                     : course.cover_image
-                                            ? `/storage/${course.cover_image}`
-                                            : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60'
-                                }
-                                alt={course.title}
-                                className="h-72 w-full object-cover"
-                            />
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <div className="text-xs uppercase tracking-wide text-slate-500 dark:text-blue-100/60">
-                                {course.category ?? 'General'}
-                            </div>
-                            <h1 className="text-3xl font-semibold text-foreground">{course.title}</h1>
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-blue-100/70">
-                                <Link
-                                    href={course.teacher_slug ? `/teachers/${course.teacher_slug}` : '#'}
-                                    className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 ring-1 ring-slate-200 transition hover:bg-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15 dark:hover:bg-white/20"
-                                >
-                                    <User className="size-4" /> {course.teacher ?? 'TBD'}
-                                </Link>
-                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
-                                    <ShieldCheck className="size-4" /> {course.status}
-                                </span>
-                                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
-                                    <BookOpen className="size-4" /> {course.level ?? 'All levels'}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="mt-2 rounded-xl border border-slate-200/70 bg-white p-4 text-sm ring-1 ring-slate-200/60 dark:border-white/10 dark:bg-white/5 dark:ring-white/10">
-                            <div className="mb-2 flex items-center gap-2 text-foreground">
-                                <Layers className="size-4" />
-                                <span className="font-semibold">Deskripsi Course</span>
-                            </div>
-                            <p className="leading-relaxed text-slate-700 dark:text-blue-100/80">
-                                {course.description ||
-                                    'Tidak ada deskripsi. Course ini siap digunakan untuk pembelajaran.'}
-                            </p>
-                        </div>
-
-                        <div className="grid gap-3 rounded-xl border border-slate-200/70 bg-slate-50 p-3 text-sm ring-1 ring-slate-200/60 dark:border-white/10 dark:bg-white/5 dark:ring-white/10 md:grid-cols-2">
-                            <div className="flex items-center justify-between">
-                                <span className="text-slate-600 dark:text-blue-100/70">Modules</span>
-                                <span className="font-semibold text-foreground">{course.modules_count}</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-slate-600 dark:text-blue-100/70">Lessons</span>
-                                <span className="font-semibold text-foreground">{course.lessons_count}</span>
-                            </div>
-                        </div>
+                                      ? `/storage/${course.cover_image}`
+                                      : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60'
+                            }
+                            alt={course.title}
+                            className="h-80 w-full object-cover"
+                        />
                     </div>
 
-                    <aside className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
-                        <div className="space-y-1">
-                            <p className="text-sm text-slate-600 dark:text-blue-100/70">Rincian Course</p>
-                            <p className="text-2xl font-semibold text-foreground">{formatIDR(course.price)}</p>
-                            <p className="text-xs text-slate-500 dark:text-blue-100/60">
-                                {course.price ? 'Akses penuh setelah pembayaran.' : 'Gratis, daftar sekarang.'}
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={enroll}
-                            disabled={!!enrollment}
-                            className="flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-400"
-                        >
-                            <ShoppingBag className="size-4" />
-                            {enrollment
-                                ? `Enrolled (${enrollment.status})`
-                                : course.price
-                                    ? 'Beli sekarang'
-                                    : 'Daftar sekarang'}
-                        </button>
-                        {!auth.user && (
-                            <p className="text-xs text-slate-500 dark:text-blue-100/60">
-                                Log in untuk daftar: <Link href={login()} className="underline">Login</Link> atau{' '}
-                                <Link href={dashboard()} className="underline">Dashboard</Link>
-                            </p>
-                        )}
-                    </aside>
-                </div>
-
-                <section className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-0">
-                    <h2 className="text-lg font-semibold text-foreground">Komentar</h2>
-                    {isEnrolled && (
-                        <form onSubmit={submitComment} className="space-y-2 rounded-xl border border-slate-200/70 bg-white/80 p-4 ring-1 ring-slate-200/60 dark:border-white/10 dark:bg-white/5 dark:ring-white/10">
-                            <textarea
-                                className="w-full rounded-lg border border-slate-200 bg-white p-3 text-sm text-foreground placeholder:text-slate-400 focus:border-blue-300/60 focus:ring-2 focus:ring-blue-500/40 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                                rows={3}
-                                placeholder="Tulis komentar sebagai student yang sudah enroll..."
-                                value={body}
-                                onChange={(event) => setBody(event.target.value)}
-                            />
-                            <div className="flex items-center justify-end gap-2">
-                                {editingId && (
-                                    <button
-                                        type="button"
-                                        onClick={cancelEdit}
-                                        className="rounded-full border border-slate-200 px-4 py-2 text-sm text-foreground transition hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
-                                    >
-                                        Batal
-                                    </button>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
-                                >
-                                    {editingId ? 'Update' : 'Kirim'}
-                                </button>
-                            </div>
-                        </form>
-                    )}
-
-                    <div className="space-y-3">
-                        {comments.map((comment) => (
-                            <div
-                                key={comment.id}
-                                className="rounded-xl border border-slate-200/70 bg-white/80 p-4 ring-1 ring-slate-200/60 dark:border-white/10 dark:bg-white/5 dark:ring-white/10"
-                            >
-                                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
-                                    <span className="font-semibold text-foreground">
-                                        {comment.user ?? 'Student'}
-                                    </span>
-                                    <span>{comment.created_at ?? ''}</span>
+                    <div className="grid gap-8 lg:grid-cols-[2fr,1fr]">
+                        <div className="space-y-6">
+                            <div className="space-y-2 border-t-4 border-[#e34724] pt-4 dark:border-orange-300">
+                                <div className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+                                    {course.category ?? 'General'}
                                 </div>
-                                <p className="mt-2 text-sm text-foreground">{comment.body}</p>
-                                {comment.can_edit && (
-                                    <div className="mt-2 flex gap-2 text-xs">
-                                        <button
-                                            type="button"
-                                            onClick={() => startEdit(comment)}
-                                            className="text-emerald-600 hover:underline dark:text-emerald-300"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => deleteComment(comment.id)}
-                                            className="text-red-500 hover:underline"
-                                        >
-                                            Hapus
-                                        </button>
-                                    </div>
-                                )}
+                                <h1 className="text-3xl font-semibold text-[#3a1b14] dark:text-orange-100">
+                                    {course.title}
+                                </h1>
+                                <div className="flex flex-wrap items-center gap-3 text-xs text-[#7a3322] dark:text-orange-100">
+                                    <Link
+                                        href={course.teacher_slug ? `/teachers/${course.teacher_slug}` : '#'}
+                                        className="inline-flex items-center gap-2 rounded-full border border-[#e34724] px-3 py-1 text-[#e34724] transition hover:bg-[#e3472410] dark:border-orange-300 dark:text-orange-200 dark:hover:bg-orange-500/10"
+                                    >
+                                        <User className="size-4" />
+                                        {course.teacher ?? 'TBD'}
+                                    </Link>
+                                    <span className="inline-flex items-center gap-2 rounded-full border border-[#e34724] px-3 py-1 text-[#e34724] dark:border-orange-300 dark:text-orange-200">
+                                        <ShieldCheck className="size-4" />
+                                        {course.status}
+                                    </span>
+                                    <span className="inline-flex items-center gap-2 rounded-full border border-[#e34724] px-3 py-1 text-[#e34724] dark:border-orange-300 dark:text-orange-200">
+                                        <BookOpen className="size-4" />
+                                        {course.level ?? 'All levels'}
+                                    </span>
+                                </div>
                             </div>
-                        ))}
-                        {comments.length === 0 && (
-                            <div className="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-600 dark:border-white/15 dark:text-blue-100/70">
-                                Belum ada komentar.
+
+                            <div className="space-y-3 border-t border-[#e3472420] pt-4 dark:border-orange-300/30">
+                                <div className="flex items-center gap-2 text-sm font-semibold text-[#3a1b14] dark:text-orange-100">
+                                    <Layers className="size-4" />
+                                    Deskripsi Course
+                                </div>
+                                <p className="leading-relaxed text-[#3a1b14] dark:text-orange-100/90">
+                                    {course.description ||
+                                        'Tidak ada deskripsi. Course ini siap digunakan untuk pembelajaran.'}
+                                </p>
+                            </div>
+
+                            <div className="grid gap-3 text-sm md:grid-cols-2">
+                                <div className="rounded-xl border border-[#e3472420] bg-white/70 px-4 py-3 text-[#3a1b14] shadow-sm dark:border-orange-300/20 dark:bg-white/5 dark:text-orange-50">
+                                    <div className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+                                        Modules
+                                    </div>
+                                    <div className="text-xl font-semibold">{course.modules_count}</div>
+                                </div>
+                                <div className="rounded-xl border border-[#e3472420] bg-white/70 px-4 py-3 text-[#3a1b14] shadow-sm dark:border-orange-300/20 dark:bg-white/5 dark:text-orange-50">
+                                    <div className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+                                        Lessons
+                                    </div>
+                                    <div className="text-xl font-semibold">{course.lessons_count}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <aside className="space-y-4 rounded-2xl border border-[#e3472420] bg-white/80 p-5 shadow-sm dark:border-orange-300/20 dark:bg-white/5">
+                            <div className="space-y-2">
+                                <p className="text-sm font-semibold text-[#e34724] dark:text-orange-200">Enroll</p>
+                                <p className="text-xs text-[#7a3322] dark:text-orange-100/80">
+                                    Course ini gratis. Klik enroll untuk mulai belajar.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={enroll}
+                                disabled={!!enrollment}
+                                className="w-full rounded-full border border-[#e34724] px-4 py-3 text-sm font-semibold text-[#e34724] transition hover:bg-[#e3472410] disabled:cursor-not-allowed disabled:border-slate-300 disabled:text-slate-400 dark:border-orange-300 dark:text-orange-200 dark:hover:bg-orange-500/10 dark:disabled:border-slate-600 dark:disabled:text-slate-500"
+                            >
+                                {enrollment ? `Enrolled (${enrollment.status})` : 'Enroll now'}
+                            </button>
+                            {!auth.user && (
+                                <p className="text-xs text-[#7a3322] dark:text-orange-100/80">
+                                    Log in untuk daftar:{' '}
+                                    <Link href={login()} className="underline">
+                                        Login
+                                    </Link>{' '}
+                                    atau{' '}
+                                    <Link href={dashboard()} className="underline">
+                                        Dashboard
+                                    </Link>
+                                </p>
+                            )}
+                        </aside>
+                    </div>
+
+                    <section className="space-y-4 border-t border-[#e3472420] pt-6 dark:border-orange-300/30">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-[#3a1b14] dark:text-orange-100">
+                            <Sparkles className="size-4 text-[#e34724] dark:text-orange-200" />
+                            Komentar
+                        </div>
+                        {isEnrolled && (
+                            <form
+                                onSubmit={submitComment}
+                                className="space-y-2 rounded-xl border border-[#e3472420] bg-white/70 p-4 shadow-sm dark:border-orange-300/20 dark:bg-white/5"
+                            >
+                                <textarea
+                                    className="w-full rounded-lg border border-[#e3472420] bg-transparent p-3 text-sm text-[#3a1b14] placeholder:text-[#c24b2c80] focus:border-[#e34724] focus:outline-none dark:border-orange-300/30 dark:text-orange-50 dark:placeholder:text-orange-200/60"
+                                    rows={3}
+                                    placeholder="Tulis komentar sebagai student yang sudah enroll..."
+                                    value={body}
+                                    onChange={(event) => setBody(event.target.value)}
+                                />
+                                <div className="flex items-center justify-end gap-2">
+                                    {editingId && (
+                                        <button
+                                            type="button"
+                                            onClick={cancelEdit}
+                                            className="rounded-full border border-[#e3472420] px-4 py-2 text-sm text-[#3a1b14] transition hover:bg-[#e3472410] dark:border-orange-300/30 dark:text-orange-100 dark:hover:bg-orange-500/10"
+                                        >
+                                            Batal
+                                        </button>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className="rounded-full bg-[#e34724] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#c63a1c] dark:bg-orange-300 dark:text-[#0b1021] dark:hover:bg-orange-200"
+                                    >
+                                        {editingId ? 'Update' : 'Kirim'}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+
+                        <div className="space-y-3">
+                            {comments.map((comment) => (
+                                <div
+                                    key={comment.id}
+                                    className="rounded-xl border border-[#e3472420] bg-white/70 p-4 shadow-sm dark:border-orange-300/20 dark:bg-white/5"
+                                >
+                                    <div className="flex items-center justify-between text-xs text-[#7a3322] dark:text-orange-100/80">
+                                        <span className="font-semibold text-[#3a1b14] dark:text-orange-100">
+                                            {comment.user ?? 'Student'}
+                                        </span>
+                                        <span>{comment.created_at ?? ''}</span>
+                                    </div>
+                                    <p className="mt-2 text-sm text-[#3a1b14] dark:text-orange-50">
+                                        {comment.body}
+                                    </p>
+                                    {comment.can_edit && (
+                                        <div className="mt-2 flex gap-2 text-xs">
+                                            <button
+                                                type="button"
+                                                onClick={() => startEdit(comment)}
+                                                className="text-[#e34724] hover:underline dark:text-orange-200"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => deleteComment(comment.id)}
+                                                className="text-red-500 hover:underline"
+                                            >
+                                                Hapus
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                            {comments.length === 0 && (
+                                <div className="rounded-xl border border-dashed border-[#e3472440] p-4 text-sm text-[#7a3322] dark:border-orange-300/30 dark:text-orange-100/80">
+                                    Belum ada komentar.
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    <section className="space-y-4 border-t border-[#e3472420] pt-8 dark:border-orange-300/30">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-[#e34724] dark:text-orange-200">
+                            Course lainnya
+                        </div>
+                        {related_courses && related_courses.length > 0 ? (
+                            <div className="grid gap-6 md:grid-cols-3">
+                                {related_courses.map((item) => (
+                                    <Link
+                                        key={item.id}
+                                        href={`/courses/${item.slug}`}
+                                        className="group block rounded-2xl border border-[#e3472420] bg-white/70 p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-orange-300/30 dark:bg-white/5"
+                                    >
+                                        {item.cover_image && (
+                                            <div className="mb-3 overflow-hidden rounded-xl border border-[#e3472420] bg-[#f6e9e3] dark:border-orange-300/30 dark:bg-orange-500/10">
+                                                <img
+                                                    src={
+                                                        item.cover_image.startsWith('http')
+                                                            ? item.cover_image
+                                                            : `/storage/${item.cover_image}`
+                                                    }
+                                                    alt={item.title}
+                                                    className="h-32 w-full object-cover transition duration-500 group-hover:scale-105"
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="space-y-1">
+                                            <p className="text-xs uppercase tracking-[0.15em] text-[#c24b2c] dark:text-orange-200">
+                                                {item.category ?? 'General'}
+                                            </p>
+                                            <p className="text-lg font-semibold text-[#3a1b14] transition group-hover:text-[#e34724] dark:text-orange-100 dark:group-hover:text-orange-200">
+                                                {item.title}
+                                            </p>
+                                            <p className="text-xs text-[#7a3322] dark:text-orange-100/80">
+                                                {item.teacher ?? 'Instruktur TBD'} · {item.level ?? 'All levels'}
+                                            </p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="rounded-xl border border-dashed border-[#e3472440] p-4 text-sm text-[#7a3322] dark:border-orange-300/30 dark:text-orange-100/80">
+                                Belum ada course lain yang direkomendasikan.
                             </div>
                         )}
-                    </div>
-                </section>
-            </header>
+                    </section>
+                </header>
             </div>
         </PublicLayout>
     );

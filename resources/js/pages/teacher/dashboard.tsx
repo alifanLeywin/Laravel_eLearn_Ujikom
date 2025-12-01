@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Head } from '@inertiajs/react';
-import { BookOpen, CheckCircle2, Clock, Eye } from 'lucide-react';
+import { BookOpen, CheckCircle2, Clock, Eye, Users } from 'lucide-react';
 
 type CourseSummary = {
     id: string;
@@ -30,9 +30,14 @@ type LessonSummary = {
 export default function TeacherDashboard({
     courses,
     lessons,
+    metrics,
 }: {
     courses: CourseSummary[];
     lessons: LessonSummary[];
+    metrics?: {
+        courses_count: number;
+        enrollments_count: number;
+    };
 }) {
     return (
         <AppLayout
@@ -117,6 +122,35 @@ export default function TeacherDashboard({
                                     <span>{item}</span>
                                 </div>
                             ))}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>At a glance</CardTitle>
+                            <CardDescription>Ringkasan performa kursus kamu.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-wrap gap-4 text-sm">
+                            <div className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2">
+                                <BookOpen className="size-4 text-muted-foreground" />
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Course live</p>
+                                    <p className="text-lg font-semibold">
+                                        {metrics?.courses_count ?? courses.length}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2">
+                                <Users className="size-4 text-muted-foreground" />
+                                <div>
+                                    <p className="text-xs text-muted-foreground">Total enrollment</p>
+                                    <p className="text-lg font-semibold">
+                                        {metrics?.enrollments_count ?? 0}
+                                    </p>
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>

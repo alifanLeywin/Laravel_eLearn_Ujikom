@@ -74,6 +74,23 @@ class CourseController extends Controller
                 ->first(['id', 'status']);
         }
 
+        $relatedCourses = Course::query()
+            ->where('status', 'published')
+            ->whereKeyNot($course->id)
+            ->latest()
+            ->limit(3)
+            ->with(['teacher:id,name', 'category:id,name'])
+            ->get()
+            ->map(fn (Course $related) => [
+                'id' => $related->id,
+                'slug' => $related->slug,
+                'title' => $related->title,
+                'cover_image' => $related->cover_image,
+                'level' => $related->level,
+                'teacher' => $related->teacher?->name,
+                'category' => $related->category?->name,
+            ]);
+
         $comments = CourseComment::query()
             ->where('course_id', $course->id)
             ->latest()
@@ -105,6 +122,7 @@ class CourseController extends Controller
             ],
             'enrollment' => $enrollment,
             'comments' => $comments,
+            'related_courses' => $relatedCourses,
         ]);
     }
 

@@ -106,7 +106,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('admin/teachers', [\App\Http\Controllers\Admin\TeacherController::class, 'index'])->name('admin.teachers.index');
         Route::get('admin/teachers/create', [\App\Http\Controllers\Admin\TeacherController::class, 'create'])->name('admin.teachers.create');
+        Route::get('admin/teachers/{teacher}/edit', [\App\Http\Controllers\Admin\TeacherController::class, 'edit'])->name('admin.teachers.edit');
         Route::post('admin/teachers', [\App\Http\Controllers\Admin\TeacherController::class, 'store'])->name('admin.teachers.store');
+        Route::put('admin/teachers/{teacher}', [\App\Http\Controllers\Admin\TeacherController::class, 'update'])->name('admin.teachers.update');
         Route::delete('admin/teachers/{teacher}', [\App\Http\Controllers\Admin\TeacherController::class, 'destroy'])->name('admin.teachers.destroy');
     });
 

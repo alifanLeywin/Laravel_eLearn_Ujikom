@@ -1,8 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 
 type Course = {
@@ -37,114 +35,135 @@ export default function PublicCoursesIndex({
         category_id: filters.category_id ?? '',
     });
 
+    const accent = 'text-[#e34724] dark:text-orange-300';
+    const accentBg = 'bg-[#e34724] dark:bg-orange-400';
+    const borderAccent = 'border-[#e34724] dark:border-orange-400';
+
+    const categoriesWithAll = useMemo(
+        () => [{ id: '', name: 'All' }, ...categories],
+        [categories],
+    );
+
     const applyFilters = (key: string, value: string) => {
         const next = { ...localFilters, [key]: value };
         setLocalFilters(next);
         router.get('/courses', next, { preserveScroll: true, replace: true });
     };
 
-    const formatIDR = (value?: string | number | null) => {
-        if (!value) {
-            return 'Gratis';
-        }
-        return new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0,
-        }).format(Number(value));
-    };
-
     return (
         <PublicLayout>
             <Head title="Courses" />
-            <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 pb-12 pt-8 md:px-6">
-                <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 dark:bg-white/5 dark:ring-white/10">
-                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <p className="text-sm text-slate-600 dark:text-blue-100/70">Jelajahi course</p>
-                            <h1 className="text-2xl font-semibold text-foreground">Semua course tersedia</h1>
+            <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-rose-50 px-4 pb-16 pt-10 text-[#3a1b14] dark:from-[#0b1021] dark:via-slate-900 dark:to-slate-950 dark:text-white md:px-10">
+                <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 lg:flex-row">
+                    <aside className="w-full max-w-xs space-y-8">
+                        <div className="space-y-2">
+                            <p className={`${accent} text-3xl font-semibold`}>Regular</p>
+                            <p className={`${accent} text-3xl font-semibold`}>courses</p>
                         </div>
-                        <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                            <div className="relative md:w-72">
-                                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400 dark:text-blue-100/60" />
-                                <Input
-                                    value={localFilters.search}
-                                    onChange={(event) => applyFilters('search', event.target.value)}
-                                    placeholder="Cari judul atau deskripsi"
-                                    className="w-full rounded-full border-slate-200 bg-white pl-10 text-sm text-foreground placeholder:text-slate-400 focus:border-blue-300/60 focus:ring-2 focus:ring-blue-500/40 dark:border-white/10 dark:bg-white/10 dark:text-white dark:placeholder:text-blue-100/60"
-                                />
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+                                    Specialty
+                                </label>
+                                <div className="mt-3 flex flex-wrap gap-2">
+                                    {categoriesWithAll.map((category) => (
+                                        <button
+                                            key={category.id}
+                                            type="button"
+                                            onClick={() => applyFilters('category_id', category.id)}
+                                            className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                                                localFilters.category_id === category.id
+                                                    ? `${accentBg} border-transparent text-white dark:text-[#0b1021]`
+                                                    : `${borderAccent} text-[#e34724] dark:text-orange-200 hover:bg-[#e3472410] dark:hover:bg-orange-500/10`
+                                            }`}
+                                        >
+                                            {category.name}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                            <select
-                                value={localFilters.category_id}
-                                onChange={(event) => applyFilters('category_id', event.target.value)}
-                                className="h-10 rounded-full border border-slate-200 bg-white px-3 text-sm text-foreground dark:border-white/10 dark:bg-white/10 dark:text-white"
-                            >
-                                <option value="">Semua kategori</option>
-                                {categories.map((category) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {courses.map((course) => (
-                        <Card
-                            key={course.id}
-                            className="border-slate-200 bg-white/90 text-slate-900 ring-1 ring-slate-200 backdrop-blur transition hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:ring-white/10"
-                        >
-                            {course.cover_image && (
-                                <div className="h-40 w-full overflow-hidden rounded-t-xl border-b border-slate-100 bg-slate-100 dark:border-white/10 dark:bg-white/5">
-                                    <img
-                                        src={
-                                            course.cover_image.startsWith('http')
-                                                ? course.cover_image
-                                                : `/storage/${course.cover_image}`
-                                        }
-                                        alt={course.title}
-                                        className="h-full w-full object-cover"
+                            <div className="space-y-2">
+                                <label className="text-xs uppercase tracking-[0.2em] text-[#c24b2c] dark:text-orange-200">
+                                    Search
+                                </label>
+                                <div className="relative">
+                                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#e34724]" />
+                                    <input
+                                        value={localFilters.search}
+                                        onChange={(event) => applyFilters('search', event.target.value)}
+                                        placeholder="Cari judul/deskripsi"
+                                        className="w-full rounded-full border border-[#e34724] bg-transparent px-10 py-2 text-sm text-[#3a1b14] placeholder:text-[#e3472470] focus:border-[#e34724] focus:outline-none dark:border-orange-400 dark:text-white dark:placeholder:text-orange-200/70 dark:focus:border-orange-300"
                                     />
                                 </div>
-                            )}
-                            <CardHeader className={course.cover_image ? 'pb-3' : undefined}>
-                                <CardTitle className="text-lg">{course.title}</CardTitle>
-                                <CardDescription className="text-slate-600 dark:text-blue-100/70">
-                                    {course.category ?? 'General'}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-3">
-                                <p className="line-clamp-3 text-sm text-slate-700 dark:text-blue-100/80">
-                                    {course.description ??
-                                        'Materi terkurasi dengan quiz, assignment, dan progress tracking.'}
-                                </p>
-                                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-blue-100/70">
-                                    <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-800 ring-1 ring-slate-200 dark:bg-white/10 dark:text-white dark:ring-white/15">
-                                        {course.level ?? 'All levels'}
-                                    </span>
-                                    <span>{course.teacher ?? 'Instruktur TBD'}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-700 dark:text-blue-100/70">
-                                        {formatIDR(course.price)}
-                                    </span>
-                                    <Link
-                                        href={`/courses/${course.slug}`}
-                                        className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 dark:text-emerald-200 dark:hover:text-white"
-                                    >
-                                        Lihat detail →
-                                    </Link>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                    {courses.length === 0 && (
-                        <div className="col-span-full rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-600 dark:border-white/20 dark:text-blue-100/70">
-                            Tidak ada course yang cocok. Ubah filter atau coba lagi nanti.
+                            </div>
                         </div>
-                    )}
+                    </aside>
+
+                    <section className="flex-1 space-y-8">
+                        <div className="rounded-2xl border border-[#e3472420] bg-white/80 p-6 shadow-sm dark:border-orange-400/30 dark:bg-white/5">
+                            <p className={`${accent} text-lg font-semibold`}>
+                                Regular courses taught at our academy. Semua kelas sedang berjalan dan siap
+                                kamu ikuti.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-10 md:grid-cols-2">
+                            {courses.map((course) => (
+                                <article
+                                    key={course.id}
+                                    className="space-y-3 border-t-4 border-[#e34724] pt-4 dark:border-orange-300"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <Link
+                                            href={`/courses/${course.slug}`}
+                                            className="text-2xl font-semibold text-[#e34724] hover:text-[#b8321b] dark:text-orange-200 dark:hover:text-white"
+                                        >
+                                            {course.title}
+                                        </Link>
+                                        <span className="text-xs uppercase tracking-[0.2em] text-[#a0331d]">
+                                            {course.status === 'published' ? 'Open' : 'Closed'}
+                                        </span>
+                                    </div>
+                                    {course.cover_image && (
+                                        <div className="overflow-hidden rounded-lg border border-[#e3472420] bg-[#f6e9e3] dark:border-orange-400/30 dark:bg-orange-500/10">
+                                            <img
+                                                src={
+                                                    course.cover_image.startsWith('http')
+                                                        ? course.cover_image
+                                                        : `/storage/${course.cover_image}`
+                                                }
+                                                alt={course.title}
+                                                className="h-48 w-full object-cover"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between text-xs text-[#7a3322]">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="rounded-full border border-[#e34724] px-3 py-1 text-[11px] text-[#e34724] dark:border-orange-300 dark:text-orange-200">
+                                                {course.level ?? 'All levels'}
+                                            </span>
+                                            <span className="text-[#7a3322] dark:text-orange-100">
+                                                {course.category ?? 'General'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4 text-sm font-semibold text-[#e34724]">
+                                        <Link
+                                            href={`/courses/${course.slug}`}
+                                            className="hover:text-[#b8321b] dark:text-orange-200 dark:hover:text-white"
+                                        >
+                                            Read more →
+                                        </Link>
+                                    </div>
+                                </article>
+                            ))}
+                            {courses.length === 0 && (
+                                <div className="col-span-full rounded-xl border border-dashed border-[#e3472440] p-6 text-center text-sm text-[#7a3322] dark:border-orange-300/40 dark:text-orange-100">
+                                    Tidak ada course yang cocok. Ubah filter atau coba lagi nanti.
+                                </div>
+                            )}
+                        </div>
+                    </section>
                 </div>
             </div>
         </PublicLayout>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TeacherStoreRequest;
+use App\Http\Requests\Admin\TeacherUpdateRequest;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -34,6 +35,7 @@ class TeacherController extends Controller
                 'tenant' => $teacher->tenant?->name,
                 'courses_count' => $teacher->taught_courses_count,
                 'created_at' => $teacher->created_at?->toDateTimeString(),
+                'slug' => $teacher->slug,
             ]);
 
         return Inertia::render('admin/teachers/index', [
@@ -74,7 +76,65 @@ class TeacherController extends Controller
             'bio' => $data['bio'] ?? null,
         ]);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Teacher created.');
+        return redirect()->route('admin.teachers.index')->with('success', 'Teacher created.');
+    }
+
+    public function edit(Request $request, User $teacher): Response
+    {
+        if ($teacher->role !== \App\Enums\UserRole::Teacher) {
+            abort(404);
+        }
+
+        $user = $request->user();
+        $this->authorizeTenantAccess($user, $teacher);
+
+        $tenants = $user?->role === \App\Enums\UserRole::SuperAdmin
+            ? Tenant::query()->get(['id', 'name'])
+            : ($user && $user->tenant_id
+                ? Tenant::query()->whereKey($user->tenant_id)->get(['id', 'name'])
+                : collect());
+
+        return Inertia::render('admin/teachers/edit', [
+            'teacher' => [
+                'id' => $teacher->id,
+                'name' => $teacher->name,
+                'email' => $teacher->email,
+                'slug' => $teacher->slug,
+                'bio' => $teacher->bio,
+                'tenant_id' => $teacher->tenant_id,
+            ],
+            'tenants' => $tenants,
+        ]);
+    }
+
+    public function update(TeacherUpdateRequest $request, User $teacher): RedirectResponse
+    {
+        if ($teacher->role !== \App\Enums\UserRole::Teacher) {
+            abort(404);
+        }
+
+        $user = $request->user();
+        $this->authorizeTenantAccess($user, $teacher);
+
+        $data = $request->validated();
+        $updateData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'slug' => $data['slug'] ?: $teacher->slug,
+            'bio' => $data['bio'] ?? null,
+        ];
+
+        if (! empty($data['password'])) {
+            $updateData['password'] = $data['password'];
+        }
+
+        if ($user?->role === \App\Enums\UserRole::SuperAdmin && ! empty($data['tenant_id'])) {
+            $updateData['tenant_id'] = $data['tenant_id'];
+        }
+
+        $teacher->update($updateData);
+
+        return redirect()->route('admin.teachers.index')->with('success', 'Teacher updated.');
     }
 
     public function destroy(Request $request, User $teacher): RedirectResponse
@@ -92,5 +152,12 @@ class TeacherController extends Controller
         $teacher->delete();
 
         return back()->with('success', 'Teacher deleted.');
+    }
+
+    private function authorizeTenantAccess(?User $user, User $teacher): void
+    {
+        if ($user?->role === \App\Enums\UserRole::Admin && $teacher->tenant_id !== $user->tenant_id) {
+            abort(403);
+        }
     }
 }

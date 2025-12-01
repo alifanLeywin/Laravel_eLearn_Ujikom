@@ -9,7 +9,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Head, Link } from '@inertiajs/react';
-import { GraduationCap, Sparkles } from 'lucide-react';
+import { GraduationCap, Sparkles, Compass } from 'lucide-react';
 
 type Enrollment = {
     id: string;
@@ -28,6 +28,8 @@ export default function StudentDashboard({
 }: {
     enrollments: Enrollment[];
 }) {
+    const activeCourses = enrollments.filter((enrollment) => enrollment.status === 'active');
+    const completedCourses = enrollments.filter((enrollment) => enrollment.progress >= 100);
     return (
         <AppLayout
             breadcrumbs={[
@@ -37,6 +39,46 @@ export default function StudentDashboard({
         >
             <Head title="Student Dashboard" />
             <div className="flex flex-col gap-6 p-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                    <Card className="border-border/70">
+                        <CardHeader>
+                            <CardTitle>Ringkasan</CardTitle>
+                            <CardDescription>Progress belajar kamu.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex flex-wrap gap-3 text-sm">
+                            <div className="flex flex-1 items-center justify-between rounded-lg border border-border/60 bg-card/60 px-3 py-2">
+                                <span className="text-muted-foreground">Active</span>
+                                <span className="text-lg font-semibold text-foreground">
+                                    {activeCourses.length}
+                                </span>
+                            </div>
+                            <div className="flex flex-1 items-center justify-between rounded-lg border border-border/60 bg-card/60 px-3 py-2">
+                                <span className="text-muted-foreground">Completed</span>
+                                <span className="text-lg font-semibold text-foreground">
+                                    {completedCourses.length}
+                                </span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card className="md:col-span-2">
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>Rekomendasi</CardTitle>
+                                <CardDescription>Jelajahi course baru.</CardDescription>
+                            </div>
+                            <Button asChild size="sm" variant="secondary">
+                                <Link href="/courses">
+                                    <Compass className="mr-2 size-4" />
+                                    Lihat katalog
+                                </Link>
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="text-sm text-muted-foreground">
+                            Cari course yang belum pernah kamu ikuti untuk menambah skill baru.
+                        </CardContent>
+                    </Card>
+                </div>
+
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <div>
