@@ -207,9 +207,9 @@ flowchart LR
 
     subgraph UC[Use Cases]
         direction TB
-        ucTenant[(Kelola tenant dan paket)]:::usecase
-        ucStaff[(Kelola admin dan teacher)]:::usecase
-        ucCatalog[(Kelola kategori dan tag katalog)]:::usecase
+        ucTenant[(Kelola tenant)]:::usecase
+        ucStaff[(Kelola teacher)]:::usecase
+        ucCatalog[(Kelola kategori)]:::usecase
         ucModerate[(Review/publish/trash/restore course)]:::usecase
 
         ucCourse[(Buat/edit/publish course pribadi)]:::usecase
