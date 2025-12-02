@@ -193,9 +193,9 @@ erDiagram
     }
 ```
 
-## 🎭 UML Use Case (Peran)
+## 🎭 UML Use Case (Peran & Fitur)
 ```mermaid
-flowchart TD
+flowchart LR
     classDef actor fill:#fdf2f8,stroke:#fb7185,color:#9f1239,stroke-width:2px;
     classDef action fill:#fff7ed,stroke:#fb923c,color:#9a3412,stroke-dasharray: 3 3;
 
@@ -205,53 +205,54 @@ flowchart TD
     ST((Student)):::actor
     GU((Guest)):::actor
 
-    saTenant[Kelola tenant]:::action
-    saStaff[Kelola teacher]:::action
-    saCatalog[Kelola kategori & course]:::action
-
-    adCat[Kelola kategori]:::action
+    saTenant[Kelola tenant & paket]:::action
+    saStaff[Kelola admin & teacher (staf)]:::action
+    saCatalog[Kelola kategori & tag katalog]:::action
+    saModerate[Review/publish/trash/restore course]:::action
     adTeacher[Kelola teacher]:::action
-    adCourse[Kelola course]:::action
 
-    teCourse[Kelola course pribadi]:::action
-    teModule[Kelola module & lesson]:::action
-    teQuiz[Buat quiz & soal]:::action
-    teAssignment[Buat assignment]:::action
-    teGrade[Nilai submission & feedback]:::action
-    teProgress[Lihat progress siswa]:::action
+    teCourse[Buat/edit/publish course sendiri]:::action
+    teModule[Susun module & lesson (text/video)]:::action
+    teQuiz[Buat quiz, soal, time-limit, passing grade]:::action
+    teAssignment[Buat assignment & due date]:::action
+    teAttachment[Kelola attachment materi]:::action
+    teGrade[Nilai submission + feedback & skor]:::action
+    teAnalytics[Lihat progres & analytics course]:::action
 
-    stBrowse[Lihat katalog & course detail]:::action
-    stEnroll[Enroll course]:::action
-    stLesson[Selesaikan lesson]:::action
-    stQuiz[Kerjakan quiz]:::action
-    stUpload[Upload assignment]:::action
-    stScore[Lihat nilai & feedback]:::action
-    stComment[Komentar course]:::action
+    stBrowse[Jelajah katalog, filter, cari course]:::action
+    stEnroll[Enroll/unenroll course (role student)]:::action
+    stPlayer[Player lesson: video/text, mark complete/undo]:::action
+    stQuiz[Kerjakan quiz & lihat skor]:::action
+    stSubmission[Upload assignment & unduh feedback]:::action
+    stProgress[Track progres & achievement]:::action
+    stComment[Komentar/pertanyaan course]:::action
 
-    guBrowse[Lihat katalog publik]:::action
+    guBrowse[Lihat katalog publik & detail course]:::action
     guAuth[Register/Login]:::action
 
     SA --> saTenant
     SA --> saStaff
     SA --> saCatalog
+    SA --> saModerate
 
-    AD --> adCat
+    AD --> saCatalog
     AD --> adTeacher
-    AD --> adCourse
+    AD --> saModerate
 
     TE --> teCourse
     TE --> teModule
     TE --> teQuiz
     TE --> teAssignment
+    TE --> teAttachment
     TE --> teGrade
-    TE --> teProgress
+    TE --> teAnalytics
 
     ST --> stBrowse
     ST --> stEnroll
-    ST --> stLesson
+    ST --> stPlayer
     ST --> stQuiz
-    ST --> stUpload
-    ST --> stScore
+    ST --> stSubmission
+    ST --> stProgress
     ST --> stComment
 
     GU --> guBrowse
