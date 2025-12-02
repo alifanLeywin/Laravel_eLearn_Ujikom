@@ -207,7 +207,9 @@ class CourseController extends Controller
                 : null,
         ]);
 
-        return redirect()->route('admin.courses.show', $course)->with('success', 'Course created.');
+        $routePrefix = $user && $user->role === UserRole::Teacher ? 'teacher' : 'admin';
+
+        return redirect()->route($routePrefix.'.courses.show', $course)->with('success', 'Course created.');
     }
 
     public function update(CourseUpdateRequest $request, Course $course): RedirectResponse
@@ -238,7 +240,10 @@ class CourseController extends Controller
         $this->authorize('delete', $course);
         $course->delete();
 
-        return redirect()->route('admin.courses.index')->with('success', 'Course deleted.');
+        $user = request()->user();
+        $routePrefix = $user && $user->role === UserRole::Teacher ? 'teacher' : 'admin';
+
+        return redirect()->route($routePrefix.'.courses.index')->with('success', 'Course deleted.');
     }
 
     public function restore(Course $course): RedirectResponse
@@ -259,6 +264,11 @@ class CourseController extends Controller
         $this->authorize('delete', $course);
         if (! $course->trashed()) {
             $course = Course::withTrashed()->findOrFail($course->id);
+        }
+
+        // If the course has a cover image stored in the public disk, delete it
+        if ($course->cover_image) {
+            Storage::disk('public')->delete($course->cover_image);
         }
 
         $course->forceDelete();
