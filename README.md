@@ -205,29 +205,29 @@ flowchart LR
     ST((Student)):::actor
     GU((Guest)):::actor
 
-    saTenant[Kelola tenant & paket]:::action
-    saStaff[Kelola admin & teacher (staf)]:::action
-    saCatalog[Kelola kategori & tag katalog]:::action
+    saTenant[Kelola tenant &amp; paket]:::action
+    saStaff[Kelola admin &amp; teacher (staf)]:::action
+    saCatalog[Kelola kategori &amp; tag katalog]:::action
     saModerate[Review/publish/trash/restore course]:::action
     adTeacher[Kelola teacher]:::action
 
     teCourse[Buat/edit/publish course sendiri]:::action
-    teModule[Susun module & lesson (text/video)]:::action
+    teModule[Susun module &amp; lesson (text/video)]:::action
     teQuiz[Buat quiz, soal, time-limit, passing grade]:::action
-    teAssignment[Buat assignment & due date]:::action
+    teAssignment[Buat assignment &amp; due date]:::action
     teAttachment[Kelola attachment materi]:::action
-    teGrade[Nilai submission + feedback & skor]:::action
-    teAnalytics[Lihat progres & analytics course]:::action
+    teGrade[Nilai submission + feedback &amp; skor]:::action
+    teAnalytics[Lihat progres &amp; analytics course]:::action
 
     stBrowse[Jelajah katalog, filter, cari course]:::action
     stEnroll[Enroll/unenroll course (role student)]:::action
     stPlayer[Player lesson: video/text, mark complete/undo]:::action
     stQuiz[Kerjakan quiz & lihat skor]:::action
-    stSubmission[Upload assignment & unduh feedback]:::action
-    stProgress[Track progres & achievement]:::action
+    stSubmission[Upload assignment &amp; unduh feedback]:::action
+    stProgress[Track progres &amp; achievement]:::action
     stComment[Komentar/pertanyaan course]:::action
 
-    guBrowse[Lihat katalog publik & detail course]:::action
+    guBrowse[Lihat katalog publik &amp; detail course]:::action
     guAuth[Register/Login]:::action
 
     SA --> saTenant
