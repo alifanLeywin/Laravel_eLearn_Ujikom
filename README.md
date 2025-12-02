@@ -196,8 +196,8 @@ erDiagram
 ## 🎭 UML Use Case (Peran & Fitur)
 ```mermaid
 flowchart LR
-    classDef actor fill:#fdf2f8,stroke:#fb7185,color:#9f1239,stroke-width:2px;
-    classDef action fill:#fff7ed,stroke:#fb923c,color:#9a3412,stroke-dasharray: 3 3;
+    classDef actor fill:#eef2ff,stroke:#6366f1,color:#312e81,stroke-width:2px;
+    classDef usecase fill:#fff7ed,stroke:#fb923c,color:#9a3412,stroke-width:1.5px;
 
     SA((Super Admin)):::actor
     AD((Admin)):::actor
@@ -205,58 +205,60 @@ flowchart LR
     ST((Student)):::actor
     GU((Guest)):::actor
 
-    saTenant[Kelola tenant &amp; paket]:::action
-    saStaff[Kelola admin &amp; teacher (staf)]:::action
-    saCatalog[Kelola kategori &amp; tag katalog]:::action
-    saModerate[Review/publish/trash/restore course]:::action
-    adTeacher[Kelola teacher]:::action
+    subgraph UC[Use Cases]
+        direction TB
+        ucTenant[(Kelola tenant dan paket)]:::usecase
+        ucStaff[(Kelola admin dan teacher)]:::usecase
+        ucCatalog[(Kelola kategori dan tag katalog)]:::usecase
+        ucModerate[(Review/publish/trash/restore course)]:::usecase
 
-    teCourse[Buat/edit/publish course sendiri]:::action
-    teModule[Susun module &amp; lesson (text/video)]:::action
-    teQuiz[Buat quiz, soal, time-limit, passing grade]:::action
-    teAssignment[Buat assignment &amp; due date]:::action
-    teAttachment[Kelola attachment materi]:::action
-    teGrade[Nilai submission + feedback &amp; skor]:::action
-    teAnalytics[Lihat progres &amp; analytics course]:::action
+        ucCourse[(Buat/edit/publish course pribadi)]:::usecase
+        ucModule[(Susun module dan lesson)]:::usecase
+        ucQuiz[(Buat quiz, soal, waktu, passing grade)]:::usecase
+        ucAssignment[(Buat assignment dan due date)]:::usecase
+        ucAttachment[(Kelola attachment materi)]:::usecase
+        ucGrade[(Nilai submission, beri feedback, skor)]:::usecase
+        ucAnalytics[(Lihat progres dan analytics course)]:::usecase
 
-    stBrowse[Jelajah katalog, filter, cari course]:::action
-    stEnroll[Enroll/unenroll course (role student)]:::action
-    stPlayer[Player lesson: video/text, mark complete/undo]:::action
-    stQuiz[Kerjakan quiz & lihat skor]:::action
-    stSubmission[Upload assignment &amp; unduh feedback]:::action
-    stProgress[Track progres &amp; achievement]:::action
-    stComment[Komentar/pertanyaan course]:::action
+        ucBrowse[(Jelajah katalog, filter, cari course)]:::usecase
+        ucEnroll[(Enroll/unenroll course)]:::usecase
+        ucPlayer[(Player lesson: video/text, complete/undo)]:::usecase
+        ucPlayQuiz[(Kerjakan quiz dan lihat skor)]:::usecase
+        ucSubmission[(Upload assignment dan unduh feedback)]:::usecase
+        ucProgress[(Track progres dan achievement)]:::usecase
+        ucComment[(Komentar/pertanyaan course)]:::usecase
 
-    guBrowse[Lihat katalog publik &amp; detail course]:::action
-    guAuth[Register/Login]:::action
+        ucPublic[(Lihat katalog publik dan detail course)]:::usecase
+        ucAuth[(Register/Login)]:::usecase
+    end
 
-    SA --> saTenant
-    SA --> saStaff
-    SA --> saCatalog
-    SA --> saModerate
+    SA --- ucTenant
+    SA --- ucStaff
+    SA --- ucCatalog
+    SA --- ucModerate
 
-    AD --> saCatalog
-    AD --> adTeacher
-    AD --> saModerate
+    AD --- ucCatalog
+    AD --- ucStaff
+    AD --- ucModerate
 
-    TE --> teCourse
-    TE --> teModule
-    TE --> teQuiz
-    TE --> teAssignment
-    TE --> teAttachment
-    TE --> teGrade
-    TE --> teAnalytics
+    TE --- ucCourse
+    TE --- ucModule
+    TE --- ucQuiz
+    TE --- ucAssignment
+    TE --- ucAttachment
+    TE --- ucGrade
+    TE --- ucAnalytics
 
-    ST --> stBrowse
-    ST --> stEnroll
-    ST --> stPlayer
-    ST --> stQuiz
-    ST --> stSubmission
-    ST --> stProgress
-    ST --> stComment
+    ST --- ucBrowse
+    ST --- ucEnroll
+    ST --- ucPlayer
+    ST --- ucPlayQuiz
+    ST --- ucSubmission
+    ST --- ucProgress
+    ST --- ucComment
 
-    GU --> guBrowse
-    GU --> guAuth
+    GU --- ucPublic
+    GU --- ucAuth
 ```
 
 ## ✨ Fitur Utama
