@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentQuizSubmitRequest;
 use App\Models\Course;
-use App\Models\Lesson;
 use App\Models\CourseProgress;
 use App\Models\Enrollment;
+use App\Models\Lesson;
 use App\Models\QuizAttempt;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -114,14 +115,20 @@ class QuizController extends Controller
         ]);
 
         if ($enrollmentId) {
-            CourseProgress::updateOrCreate(
+            CourseProgress::upsert(
                 [
-                    'enrollment_id' => $enrollmentId,
-                    'lesson_id' => $lesson->id,
+                    [
+                        'id' => (string) Str::uuid(),
+                        'enrollment_id' => $enrollmentId,
+                        'lesson_id' => $lesson->id,
+                        'completed_at' => now(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'deleted_at' => null,
+                    ],
                 ],
-                [
-                    'completed_at' => now(),
-                ],
+                ['enrollment_id', 'lesson_id'],
+                ['completed_at', 'updated_at', 'deleted_at']
             );
         }
 
